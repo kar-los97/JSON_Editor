@@ -1,18 +1,23 @@
 package parsing;
 
 import enums.TokenType;
+import exceptions.JSONErrorException;
 import lexing.Lexem;
 import netscape.javascript.JSObject;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import tokens.Token;
+import values.JSArray;
+import values.NumberValue;
+import values.StringValue;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class Parser {
-    private Parser(){};
-    private static Parser instance = new Parser();
-    public static Parser getInstance(){
-        return instance;
+public class Parser implements IParser{
+
+    public Parser(){
+
     }
 
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){
@@ -45,8 +50,34 @@ public class Parser {
         return t;
     }
 
-    public JSObject readObject(Queue<Token>){
-        return null;
+    public JSObject readObject(Queue<Token> tokens) throws JSONErrorException {
+        Token t = tokens.peek();
+        if(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
+            throw new JSONErrorException();
+        }
+        tokens.poll();
+        t = tokens.poll();
+        //dokud neni ukoncovaci zavorka - cti objekt
+        while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
+            //hodnota objektu - začíná vždy názevem, který je mezi uvozovkami
+            if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+
+            }
+        }
+        throw new NotImplementedException();
+
+    }
+
+    public JSArray createJSArray(Queue<Token> tokens){
+        throw new NotImplementedException();
+    }
+
+    public NumberValue createNumberValue(Queue<Token> tokens){
+        throw new NotImplementedException();
+    }
+
+    public StringValue createStringValue(Queue<Token>tokens){
+        throw new NotImplementedException();
     }
 
 }

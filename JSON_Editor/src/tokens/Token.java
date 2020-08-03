@@ -4,6 +4,9 @@ import enums.TokenType;
 
 public class Token {
     private TokenType typeOfToken;
+    public TokenType getTypeOfToken(){
+        return  typeOfToken;
+    }
     private String value;
 
     public Token(String value) {
