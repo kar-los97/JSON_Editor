@@ -1,12 +1,29 @@
 package lexing;
 
 public class Lexem {
+    private int row;
+    private int column;
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
     private String value;
 
     public Lexem(){
     }
 
     public Lexem(String value){
+        this.value = value;
+    }
+
+    public Lexem(int row, int column, String value) {
+        this.row = row;
+        this.column = column;
         this.value = value;
     }
 
@@ -20,6 +37,6 @@ public class Lexem {
 
     @Override
     public String toString() {
-        return this.value;
+        return this.value + "("+row+", "+column+")";
     }
 }

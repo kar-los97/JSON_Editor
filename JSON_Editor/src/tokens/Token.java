@@ -3,13 +3,17 @@ package tokens;
 import enums.TokenType;
 
 public class Token {
+    private int row;
+    private int column;
     private TokenType typeOfToken;
     public TokenType getTypeOfToken(){
         return  typeOfToken;
     }
     private String value;
 
-    public Token(String value) {
+    public Token(String value,int row, int column) {
+        this.row = row;
+        this.column = column;
         this.value = value;
         typeOfToken = TokenType.STRING;
         try{
@@ -31,13 +35,15 @@ public class Token {
 
     }
 
-    public Token(TokenType type, String value) {
+    public Token(TokenType type, String value,int row, int column) {
         this.typeOfToken = type;
         this.value = value;
+        this.row = row;
+        this.column = column;
     }
 
     @Override
     public String toString() {
-        return typeOfToken + "("+value+")";
+        return typeOfToken + "("+value+")"+" Position: ("+row+", "+column+")";
     }
 }

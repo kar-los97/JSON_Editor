@@ -20,10 +20,13 @@ public class Lexer {
         List<Lexem> lexems = new LinkedList<>();
         String buffer = "";
         boolean isString = false;
+        int row = 0;
         while(br.ready()){
+            int column = 0;
             for(char ch : br.readLine().toCharArray()){
                 if(isString && ch!='\"'){
                     buffer+=ch;
+                    column++;
                     continue;
                 }
                 switch(ch){
@@ -37,25 +40,39 @@ public class Lexer {
                     case ',':
                     case '\'':
                     case ':':
+                        int col = column;
                         if(buffer.length()>0){
-                            lexems.add(new Lexem(buffer));
+                            if(buffer.length()>1) {
+                                col = column - buffer.length();
+                            }
+                            lexems.add(new Lexem(row,col,buffer));
                             buffer = "";
                         }
-                        lexems.add(new Lexem(String.valueOf(ch)));
+                        lexems.add(new Lexem(row,column,String.valueOf(ch)));
                         break;
                     case '\"':
                         if(buffer.length()>0){
-                            lexems.add(new Lexem(buffer));
+                            lexems.add(new Lexem(row,column-buffer.length(),buffer));
                             buffer = "";
                         }
-                        lexems.add(new Lexem(String.valueOf(ch)));
+                        lexems.add(new Lexem(row,column,String.valueOf(ch)));
                         isString = !isString;
                         break;
                     default:
                         buffer+=ch;
+                        column++;
                         break;
                 }
+
             }
+            if(buffer.length()>0){
+                int col = column;
+                if(buffer.length()>1)
+                    col = column-buffer.length();
+                lexems.add(new Lexem(row,col,buffer));
+                buffer = "";
+            }
+            row++;
         }
         return lexems;
     }

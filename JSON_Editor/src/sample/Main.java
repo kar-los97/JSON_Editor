@@ -29,7 +29,8 @@ public class Main extends Application {
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         File f = chooser.showOpenDialog(stage);
         List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(f);
-        Queue<Token> tokens = Parser.getInstance().createTokensFromLexems(lexems);
+        Parser parser = new Parser();
+        Queue<Token> tokens = parser.createTokensFromLexems(lexems);
         for(Token t:tokens){
             System.out.println(t);
         }

@@ -9,6 +9,7 @@ import tokens.Token;
 import values.JSArray;
 import values.NumberValue;
 import values.StringValue;
+import values.Value;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +47,7 @@ public class Parser implements IParser{
             }
         }
 
-        Token t = new Token(type,l.getValue());
+        Token t = new Token(type,l.getValue(),l.getRow(),l.getColumn());
         return t;
     }
 
@@ -57,15 +58,22 @@ public class Parser implements IParser{
         }
         tokens.poll();
         t = tokens.poll();
-        //dokud neni ukoncovaci zavorka - cti objekt
+        //dokud neni ukoncovaci zavorka - cti hodnoty
         while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
-            //hodnota objektu - začíná vždy názevem, který je mezi uvozovkami
-            if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
 
-            }
         }
         throw new NotImplementedException();
 
+    }
+
+    public Value readValue(Queue<Token> tokens){
+        Token t = tokens.peek();
+        //nazev
+        //hodnota objektu - začíná vždy názevem, který je mezi uvozovkami
+        if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+
+        }
+        throw new NotImplementedException();
     }
 
     public JSArray createJSArray(Queue<Token> tokens){
