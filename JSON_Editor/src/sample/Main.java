@@ -10,6 +10,7 @@ import lexing.Lexem;
 import lexing.Lexer;
 import reading.JSReader;
 import tokens.Token;
+import values.JSObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +35,8 @@ public class Main extends Application {
         for(Token t:tokens){
             System.out.println(t);
         }
-        //System.out.println(lexems);
+        JSObject object = JSReader.readObject(tokens);
+        System.out.println();
     }
 
 

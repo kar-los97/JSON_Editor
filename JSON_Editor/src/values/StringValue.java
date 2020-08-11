@@ -3,7 +3,8 @@ package values;
 public class StringValue extends Value {
     private String value;
 
-    public StringValue(String value) {
+    public StringValue(String name,String value) {
+        super(name);
         this.value = value;
     }
 

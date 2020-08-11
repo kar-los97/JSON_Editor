@@ -3,13 +3,9 @@ package reading;
 import enums.TokenType;
 import exceptions.JSONErrorException;
 import lexing.Lexem;
-import values.JSObject;
+import values.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import tokens.Token;
-import values.JSArray;
-import values.NumberValue;
-import values.StringValue;
-import values.Value;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -24,6 +20,10 @@ public class JSReader implements IJSReader {
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){
         Queue<Token> tokens = new LinkedList<>();
         for(Lexem l:lexems){
+            Token t = createToken(l);
+            if(t.getTypeOfToken().equals(TokenType.WHITE_SPACE)){
+                continue;
+            }
             tokens.add(createToken(l));
         }
         return tokens;
@@ -43,7 +43,21 @@ public class JSReader implements IJSReader {
                 Double.parseDouble(l.getValue());
                 type = TokenType.NUMBER;
             }catch (NumberFormatException ex){
-                type = TokenType.STRING;
+                switch(l.getValue()){
+                    case "\t":
+                    case " ":
+                    case "\n":
+                        type = TokenType.WHITE_SPACE;
+                        break;
+                    case "true":
+                    case "false":
+                        type = TokenType.BOOLEAN;
+                        break;
+                    default:
+                        type = TokenType.STRING;
+                        break;
+                }
+
             }
         }
 
@@ -57,13 +71,17 @@ public class JSReader implements IJSReader {
             throw new JSONErrorException();
         }
         tokens.poll();
-        t = tokens.poll();
+        t = tokens.peek();
         JSObject object = new JSObject();
         //dokud neni ukoncovaci zavorka - cti hodnoty
         while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
             object.addValue(readValue(tokens));
+            if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
+                tokens.poll();
+            }
+            t = tokens.peek();
         }
-        throw new NotImplementedException();
+        return object;
 
     }
 
@@ -99,22 +117,41 @@ public class JSReader implements IJSReader {
         }
         tokens.poll();
         t = tokens.peek();
-        switch (t.getTypeOfToken()){
-            case SQUARE_BRACKET_START:
-                return readJSArray(tokens,name);
+        if(t.getTypeOfToken().equals(TokenType.SQUARE_BRACKET_START)){
+            return readJSArray(tokens,name);
+        }else if (t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+            tokens.poll();
+            t = tokens.peek();
         }
-        throw new NotImplementedException();
+        switch (t.getTypeOfToken()){
+            case STRING:
+                StringValue strVal = new StringValue(name,t.getValue());
+                tokens.poll();
+                t = tokens.peek();
+                if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+                    throw new JSONErrorException("Quontation mark expected at ("+t.getRow()+", "+t.getColumn()+")");
+                }
+                tokens.poll();
+                return strVal;
+            case BOOLEAN:
+                BoolValue boolValue = new BoolValue(name,Boolean.parseBoolean(t.getValue()));
+                tokens.poll();
+                t = tokens.peek();
+                if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+                    throw new JSONErrorException("Quontation mark expected at ("+t.getRow()+", "+t.getColumn()+")");
+                }
+                tokens.poll();
+                return boolValue;
+            case NUMBER:
+                NumberValue nValue = new NumberValue(name,Double.parseDouble(t.getValue()));
+                tokens.poll();
+                return nValue;
+            default:
+                throw new JSONErrorException("Unexpected token at ("+t.getRow()+", "+t.getColumn()+")");
+        }
     }
 
     public JSArray readJSArray(Queue<Token> tokens,String name){
-        throw new NotImplementedException();
-    }
-
-    public NumberValue readNumberValue(Queue<Token> tokens, String name){
-        throw new NotImplementedException();
-    }
-
-    public StringValue readStringValue(Queue<Token>tokens, String name){
         throw new NotImplementedException();
     }
 

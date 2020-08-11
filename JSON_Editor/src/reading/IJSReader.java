@@ -16,6 +16,4 @@ public interface IJSReader {
     Token createToken(Lexem l);
     JSObject readObject(Queue<Token> tokens) throws JSONErrorException;
     JSArray readJSArray(Queue<Token> tokens,String name);
-    NumberValue readNumberValue(Queue<Token> tokens, String name);
-    StringValue readStringValue(Queue<Token>tokens, String name);
 }

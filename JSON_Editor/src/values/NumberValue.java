@@ -3,7 +3,8 @@ package values;
 public class NumberValue extends Value {
     private double value;
 
-    public NumberValue(double value) {
+    public NumberValue(String name, double value) {
+        super(name);
         this.value = value;
     }
 

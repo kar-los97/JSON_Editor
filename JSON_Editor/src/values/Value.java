@@ -5,6 +5,13 @@ public abstract class Value {
     public String getName(){
         return name;
     }
+    public Value(String name){
+        this.name = name;
+    }
+
+    public Value(){
+
+    }
     abstract Object getValue();
     abstract void setValue(Object value);
 }
