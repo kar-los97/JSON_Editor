@@ -91,6 +91,18 @@ public class JSReader implements IJSReader {
         if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
             throw new JSONErrorException("Quontation mark expected at ("+t.getRow()+", "+t.getColumn()+")");
         }
+
+        tokens.poll();
+        t = tokens.peek();
+        if(!t.getTypeOfToken().equals(TokenType.COLON)){
+            throw new JSONErrorException("Colon expected at ("+t.getRow()+", "+t.getColumn()+")");
+        }
+        tokens.poll();
+        t = tokens.peek();
+        switch (t.getTypeOfToken()){
+            case SQUARE_BRACKET_START:
+                return readJSArray(tokens,name);
+        }
         throw new NotImplementedException();
     }
 
