@@ -1,9 +1,9 @@
-package parsing;
+package reading;
 
 import enums.TokenType;
 import exceptions.JSONErrorException;
 import lexing.Lexem;
-import netscape.javascript.JSObject;
+import values.JSObject;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import tokens.Token;
 import values.JSArray;
@@ -15,9 +15,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class Parser implements IParser{
+public class JSReader implements IJSReader {
 
-    public Parser(){
+    public JSReader(){
 
     }
 
@@ -43,7 +43,7 @@ public class Parser implements IParser{
                 Double.parseDouble(l.getValue());
                 type = TokenType.NUMBER;
             }catch (NumberFormatException ex){
-                type = TokenType.OTHER;
+                type = TokenType.STRING;
             }
         }
 
@@ -58,33 +58,51 @@ public class Parser implements IParser{
         }
         tokens.poll();
         t = tokens.poll();
+        JSObject object = new JSObject();
         //dokud neni ukoncovaci zavorka - cti hodnoty
-        while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
-
+        while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
+            object.addValue(readValue(tokens));
         }
         throw new NotImplementedException();
 
     }
 
-    public Value readValue(Queue<Token> tokens){
+    public Value readValue(Queue<Token> tokens) throws JSONErrorException {
         Token t = tokens.peek();
+        if (t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
+            return readObject(tokens);
+        }
         //nazev
+        String name;
         //hodnota objektu - začíná vždy názevem, který je mezi uvozovkami
         if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+            throw new JSONErrorException("Quontation mark expected at ("+t.getRow()+", "+t.getColumn()+")");
+        }
 
+        tokens.poll();
+        t = tokens.peek();
+        if(!t.getTypeOfToken().equals(TokenType.STRING)){
+            throw new JSONErrorException("String value expected at ("+t.getRow()+", "+t.getColumn()+")");
+        }
+        name = t.getValue();
+
+        tokens.poll();
+        t = tokens.peek();
+        if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+            throw new JSONErrorException("Quontation mark expected at ("+t.getRow()+", "+t.getColumn()+")");
         }
         throw new NotImplementedException();
     }
 
-    public JSArray createJSArray(Queue<Token> tokens){
+    public JSArray readJSArray(Queue<Token> tokens,String name){
         throw new NotImplementedException();
     }
 
-    public NumberValue createNumberValue(Queue<Token> tokens){
+    public NumberValue readNumberValue(Queue<Token> tokens, String name){
         throw new NotImplementedException();
     }
 
-    public StringValue createStringValue(Queue<Token>tokens){
+    public StringValue readStringValue(Queue<Token>tokens, String name){
         throw new NotImplementedException();
     }
 

@@ -35,7 +35,19 @@ public class Token {
 
     }
 
-    public Token(TokenType type, String value,int row, int column) {
+    public int getRow() {
+        return row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public Token(TokenType type, String value, int row, int column) {
         this.typeOfToken = type;
         this.value = value;
         this.row = row;

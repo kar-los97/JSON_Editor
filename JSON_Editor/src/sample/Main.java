@@ -8,7 +8,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import lexing.Lexem;
 import lexing.Lexer;
-import parsing.Parser;
+import reading.JSReader;
 import tokens.Token;
 
 import java.io.File;
@@ -29,8 +29,8 @@ public class Main extends Application {
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         File f = chooser.showOpenDialog(stage);
         List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(f);
-        Parser parser = new Parser();
-        Queue<Token> tokens = parser.createTokensFromLexems(lexems);
+        JSReader JSReader = new JSReader();
+        Queue<Token> tokens = JSReader.createTokensFromLexems(lexems);
         for(Token t:tokens){
             System.out.println(t);
         }
