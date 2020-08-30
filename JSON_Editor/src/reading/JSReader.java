@@ -7,6 +7,7 @@ import values.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import tokens.Token;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -124,6 +125,12 @@ public class JSReader implements IJSReader {
             t = tokens.peek();
         }
         switch (t.getTypeOfToken()){
+            case SQUARE_BRACKET_START:
+                return readJSArray(tokens,name);
+            case CURLY_BRACKET_START:
+                return readObject(tokens);
+            case NULL:
+                return new NullValue(name);
             case STRING:
                 StringValue strVal = new StringValue(name,t.getValue());
                 tokens.poll();
@@ -151,8 +158,17 @@ public class JSReader implements IJSReader {
         }
     }
 
-    public JSArray readJSArray(Queue<Token> tokens,String name){
-        throw new NotImplementedException();
+    public JSArray readJSArray(Queue<Token> tokens,String name) throws JSONErrorException {
+        List<Value> values = new ArrayList<>();
+        Token t = tokens.peek();
+        while(t.getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
+            values.add(readValue(tokens));
+            if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
+                tokens.poll();
+            }
+            t = tokens.peek();
+        }
+        return new JSArray(name,values);
     }
 
 }

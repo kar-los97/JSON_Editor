@@ -15,6 +15,7 @@ public enum TokenType {
     NUMBER(""),
     BOOLEAN(""),
     STRING(""),
+    NULL("NULL"),
     OTHER("");
 
     private String value;
