@@ -2,9 +2,10 @@ package reading;
 
 import enums.TokenType;
 import exceptions.JSONErrorException;
+import jdk.nashorn.internal.runtime.QuotedStringTokenizer;
 import lexing.Lexem;
-import values.*;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+import values.*;
 import tokens.Token;
 
 import java.util.ArrayList;
@@ -77,6 +78,7 @@ public class JSReader implements IJSReader {
         //dokud neni ukoncovaci zavorka - cti hodnoty
         while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
             object.addValue(readValue(tokens));
+            t = tokens.peek();
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }
@@ -118,14 +120,13 @@ public class JSReader implements IJSReader {
         }
         tokens.poll();
         t = tokens.peek();
-        if(t.getTypeOfToken().equals(TokenType.SQUARE_BRACKET_START)){
-            return readJSArray(tokens,name);
-        }else if (t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+        if (t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
             tokens.poll();
             t = tokens.peek();
         }
         switch (t.getTypeOfToken()){
             case SQUARE_BRACKET_START:
+                tokens.poll();
                 return readJSArray(tokens,name);
             case CURLY_BRACKET_START:
                 return readObject(tokens);
@@ -143,11 +144,6 @@ public class JSReader implements IJSReader {
             case BOOLEAN:
                 BoolValue boolValue = new BoolValue(name,Boolean.parseBoolean(t.getValue()));
                 tokens.poll();
-                t = tokens.peek();
-                if(!t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
-                    throw new JSONErrorException("Quontation mark expected at ("+t.getRow()+", "+t.getColumn()+")");
-                }
-                tokens.poll();
                 return boolValue;
             case NUMBER:
                 NumberValue nValue = new NumberValue(name,Double.parseDouble(t.getValue()));
@@ -161,14 +157,24 @@ public class JSReader implements IJSReader {
     public JSArray readJSArray(Queue<Token> tokens,String name) throws JSONErrorException {
         List<Value> values = new ArrayList<>();
         Token t = tokens.peek();
-        while(t.getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
-            values.add(readValue(tokens));
+        while(!t.getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
+            values.add(readJSArrayValue(tokens));
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }
             t = tokens.peek();
         }
+        tokens.poll();
         return new JSArray(name,values);
+    }
+
+    private Value readJSArrayValue(Queue<Token> tokens)throws JSONErrorException{
+        Token t = tokens.peek();
+        if(t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+            tokens.poll();
+            t = tokens.peek();
+        }
+        throw new NotImplementedException();
     }
 
 }

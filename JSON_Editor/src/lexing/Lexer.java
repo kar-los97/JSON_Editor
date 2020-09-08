@@ -30,6 +30,8 @@ public class Lexer {
                     continue;
                 }
                 switch(ch){
+                    case '\t':
+                        break;
                     case ' ':
                     case '{':
                     case '}':
