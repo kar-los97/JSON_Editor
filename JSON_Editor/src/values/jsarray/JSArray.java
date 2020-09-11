@@ -1,15 +1,17 @@
-package values;
+package values.jsarray;
+
+import values.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class JSArray extends Value {
-    private List<Value> values;
+    private List<JSArrayValue> values;
     public JSArray() {
         values = new ArrayList<>();
     }
 
-    public JSArray(String name, List<Value> values) {
+    public JSArray(String name, List<JSArrayValue> values) {
         super(name);
         this.values = values;
     }
@@ -20,7 +22,7 @@ public class JSArray extends Value {
     }
 
     @Override
-    void setValue(Object value) {
+    public void setValue(Object value) {
 
     }
 }

@@ -12,6 +12,6 @@ public abstract class Value {
     public Value(){
 
     }
-    abstract Object getValue();
-    abstract void setValue(Object value);
+    public abstract Object getValue();
+    public abstract void setValue(Object value);
 }

@@ -6,12 +6,12 @@ public class NullValue extends Value{
     }
 
     @Override
-    Object getValue() {
+    public Object getValue() {
         return null;
     }
 
     @Override
-    void setValue(Object value) {
+    public void setValue(Object value) {
 
     }
 }

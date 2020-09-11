@@ -35,7 +35,7 @@ public class Main extends Application {
         for(Token t:tokens){
             System.out.println(t);
         }
-        JSObject object = JSReader.readObject(tokens);
+        JSObject object = JSReader.readJSObject(tokens);
         System.out.println();
     }
 
