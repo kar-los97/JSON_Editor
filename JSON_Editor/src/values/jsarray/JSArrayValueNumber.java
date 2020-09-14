@@ -1,15 +1,23 @@
 package values.jsarray;
 
+import exceptions.JSONErrorException;
+
 public class JSArrayValueNumber extends JSArrayValue{
     private double value;
 
     @Override
-    Object getValue() {
+    public Double getValue() {
         return value;
     }
 
     @Override
-    void setValue(Object value) {
-        this.value = (double)value;
+    void setValue(Object value) throws JSONErrorException {
+        if(value instanceof Double){
+            this.value = (Double)value;
+        }else{
+            throw new JSONErrorException("Double expected!");
+        }
+
+
     }
 }

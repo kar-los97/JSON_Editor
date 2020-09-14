@@ -1,10 +1,12 @@
 package values;
 
 
+import values.jsarray.JSArrayValue;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSObject extends Value{
+public class JSObject extends Value {
     private List<Value> values;
 
     public JSObject(List<Value> values) {
@@ -21,7 +23,7 @@ public class JSObject extends Value{
 
     @Override
     public Object getValue() {
-        return null;
+        return values;
     }
 
     @Override

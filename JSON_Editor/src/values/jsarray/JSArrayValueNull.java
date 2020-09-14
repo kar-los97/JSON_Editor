@@ -2,7 +2,7 @@ package values.jsarray;
 
 public class JSArrayValueNull extends JSArrayValue{
     @Override
-    Object getValue() {
+    public Object getValue() {
         return null;
     }
 

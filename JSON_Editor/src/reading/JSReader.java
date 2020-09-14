@@ -8,6 +8,7 @@ import values.*;
 import tokens.Token;
 import values.jsarray.JSArray;
 import values.jsarray.JSArrayValue;
+import values.jsarray.JSArrayValueString;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -100,6 +101,11 @@ public class JSReader implements IJSReader {
             }
             t = tokens.peek();
         }
+        t = tokens.peek();
+        if(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
+            throw new JSONErrorException("Curly bracket END expected at ("+t.getRow()+", "+t.getColumn()+")");
+        }
+        tokens.poll();
         return object;
 
     }
@@ -128,8 +134,10 @@ public class JSReader implements IJSReader {
         Token t = tokens.peek();
         switch (t.getValue()){
             case "true":
+                tokens.poll();
                 return true;
             case "false":
+                tokens.poll();
                 return false;
             default:
                 throw new JSONErrorException("Boolean value expected (\"true\" or \"false\" at ("+t.getRow()+", "+t.getColumn()+")");
@@ -167,10 +175,10 @@ public class JSReader implements IJSReader {
     }
 
     private JSArray readJSArray(Queue<Token> tokens, String name) throws JSONErrorException {
-        List<JSArrayValue> values = new ArrayList<>();
+        List<Value> values = new ArrayList<>();
         Token t = tokens.peek();
         while(!t.getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
-            values.add(readJSArrayValue(tokens));
+            values.add(readValue(tokens,name));
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }
@@ -178,15 +186,6 @@ public class JSReader implements IJSReader {
         }
         tokens.poll();
         return new JSArray(name,values);
-    }
-
-    private JSArrayValue readJSArrayValue(Queue<Token> tokens)throws JSONErrorException{
-        Token t = tokens.peek();
-        if(t.getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
-            tokens.poll();
-            t = tokens.peek();
-        }
-        throw new NotImplementedException();
     }
 
 }
