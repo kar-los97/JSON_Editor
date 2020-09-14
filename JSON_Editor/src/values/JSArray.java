@@ -1,4 +1,4 @@
-package values.jsarray;
+package values;
 
 import exceptions.JSONErrorException;
 import values.Value;

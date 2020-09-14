@@ -3,7 +3,6 @@ package reading;
 import exceptions.JSONErrorException;
 import lexing.Lexem;
 import tokens.Token;
-import values.jsarray.JSArray;
 import values.JSObject;
 
 import java.util.List;
