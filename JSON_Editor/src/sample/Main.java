@@ -26,17 +26,6 @@ public class Main extends Application {
         primaryStage.setScene(new Scene(root, 300, 275));
         stage = primaryStage;
         primaryStage.show();
-        FileChooser chooser = new FileChooser();
-        chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
-        File f = chooser.showOpenDialog(stage);
-        List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(f);
-        JSReader JSReader = new JSReader();
-        Queue<Token> tokens = JSReader.createTokensFromLexems(lexems);
-        for(Token t:tokens){
-            System.out.println(t);
-        }
-        JSObject object = JSReader.readJSObject(tokens);
-        System.out.println();
     }
 
 

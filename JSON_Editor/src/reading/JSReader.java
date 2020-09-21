@@ -65,23 +65,23 @@ public class JSReader implements IJSReader {
         return t;
     }
 
-    public JSObject readJSObject(Queue<Token> tokens) throws JSONErrorException {
+    public JSObject readJSObject(Queue<Token> tokens,String objectName) throws JSONErrorException {
         Token t = tokens.peek();
         if(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
             throw new JSONErrorException();
         }
         tokens.poll();
         t = tokens.peek();
-        JSObject object = new JSObject();
+        JSObject object;
+        if(objectName!=null && objectName.length()>0){
+            object = new JSObject(objectName);
+        }else{
+            object = new JSObject();
+        }
+
         //dokud neni ukoncovaci zavorka - cti hodnoty
         while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
             t = tokens.peek();
-            //pokud je slozena zavorka, cti vnoreny objekt
-            if (t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
-                object.addValue(readJSObject(tokens));
-                t = tokens.peek();
-                continue;
-            }
             //nacteni nazvu
             String name = readStringValue(tokens);
             //ocekava se :
@@ -90,6 +90,12 @@ public class JSReader implements IJSReader {
                 throw new JSONErrorException("Colon expected at ("+t.getRow()+", "+t.getColumn()+")");
             }
             tokens.poll();
+            //pokud je slozena zavorka, cti vnoreny objekt
+            if (t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
+                object.addValue(readJSObject(tokens,name));
+                t = tokens.peek();
+                continue;
+            }
             object.addValue(readValue(tokens,name));
             t = tokens.peek();
 
@@ -150,6 +156,15 @@ public class JSReader implements IJSReader {
         throw new JSONErrorException("Number value expected at ("+t.getRow()+", "+t.getColumn()+")");
     }
 
+    private NullValue readNullValue(Queue<Token>tokens, String name) throws JSONErrorException {
+        Token t = tokens.peek();
+        if(t.getTypeOfToken().equals(TokenType.NULL)){
+            tokens.poll();
+            return new NullValue(name);
+        }
+        throw new JSONErrorException("Null expected at ("+t.getRow()+", "+t.getColumn()+")");
+    }
+
     private Value readValue(Queue<Token> tokens, String name) throws JSONErrorException {
         Token t = tokens.peek();
         switch (t.getTypeOfToken()){
@@ -157,9 +172,9 @@ public class JSReader implements IJSReader {
                 tokens.poll();
                 return readJSArray(tokens,name);
             case CURLY_BRACKET_START:
-                return readJSObject(tokens);
+                return readJSObject(tokens,name);
             case NULL:
-                return new NullValue(name);
+                return readNullValue(tokens,name);
             case QUONTATION_MARKS:
                 return new StringValue(name,readStringValue(tokens));
             case BOOLEAN:

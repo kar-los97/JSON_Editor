@@ -20,4 +20,9 @@ public class StringValue extends Value {
     public void setValue(Object value) {
         this.value = (String)value;
     }
+
+    @Override
+    public String toString() {
+        return "\""+this.getName()+"\""+" : "+ "\""+value+"\"";
+    }
 }

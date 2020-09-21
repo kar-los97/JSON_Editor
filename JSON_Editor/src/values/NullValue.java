@@ -14,4 +14,9 @@ public class NullValue extends Value{
     public void setValue(Object value) {
 
     }
+
+    @Override
+    public String toString() {
+        return "\""+this.getName()+"\""+" : "+ "null";
+    }
 }

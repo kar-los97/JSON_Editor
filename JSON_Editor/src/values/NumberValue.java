@@ -20,4 +20,9 @@ public class NumberValue extends Value {
     public void setValue(Object value) {
         this.value = (double) value;
     }
+
+    @Override
+    public String toString() {
+        return "\""+this.getName()+"\""+" : "+ value;
+    }
 }
