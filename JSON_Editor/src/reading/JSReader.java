@@ -20,58 +20,49 @@ public class JSReader implements IJSReader {
 
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){
         Queue<Token> tokens = new LinkedList<>();
-        for(Lexem l:lexems){
-            Token t = createToken(l);
-            if(t.getTypeOfToken().equals(TokenType.WHITE_SPACE)){
-                continue;
-            }
-            tokens.add(createToken(l));
+        for(Lexem lexem:lexems){
+            tokens.add(createToken(lexem));
         }
         return tokens;
     }
 
     public Token createToken(Lexem l){
-        TokenType type=null;
-        for (TokenType tt: TokenType.values()) {
-            if(l.getValue().equals(tt.getValue())){
-                type = tt;
+        TokenType typeOfNewToken = null;
+        for (TokenType tokenType: TokenType.values()) {
+            if(l.getValue().equals(tokenType.getValue())){
+                typeOfNewToken = tokenType;
                 break;
             }
         }
-        if(type==null){
+        if(typeOfNewToken==null){
             try{
                 Double.parseDouble(l.getValue());
-                type = TokenType.NUMBER;
+                typeOfNewToken = TokenType.NUMBER;
             }catch (NumberFormatException ex){
                 switch(l.getValue()){
-                    case "\t":
-                    case " ":
-                    case "\n":
-                        type = TokenType.WHITE_SPACE;
-                        break;
                     case "true":
                     case "false":
-                        type = TokenType.BOOLEAN;
+                        typeOfNewToken = TokenType.BOOLEAN;
                         break;
                     default:
-                        type = TokenType.STRING;
+                        typeOfNewToken = TokenType.STRING;
                         break;
                 }
 
             }
         }
 
-        Token t = new Token(type,l.getValue(),l.getRow(),l.getColumn());
-        return t;
+        Token newToken = new Token(typeOfNewToken,l.getValue(),l.getRow(),l.getColumn());
+        return newToken;
     }
 
     public JSObject readJSObject(Queue<Token> tokens,String objectName) throws JSONErrorException {
-        Token t = tokens.peek();
-        if(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
+        Token nextToken = tokens.peek();
+        if(!nextToken.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
             throw new JSONErrorException();
         }
         tokens.poll();
-        t = tokens.peek();
+        nextToken = tokens.peek();
         JSObject object;
         if(objectName!=null && objectName.length()>0){
             object = new JSObject(objectName);
@@ -80,33 +71,32 @@ public class JSReader implements IJSReader {
         }
 
         //dokud neni ukoncovaci zavorka - cti hodnoty
-        while(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
-            t = tokens.peek();
+        while(!nextToken.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
             //nacteni nazvu
             String name = readStringValue(tokens);
             //ocekava se :
-            t = tokens.peek();
-            if(!t.getTypeOfToken().equals(TokenType.COLON)){
-                throw new JSONErrorException("Colon expected at ("+t.getRow()+", "+t.getColumn()+")");
+            nextToken = tokens.peek();
+            if(!nextToken.getTypeOfToken().equals(TokenType.COLON)){
+                throw new JSONErrorException("Colon expected at ("+nextToken.getRow()+", "+nextToken.getColumn()+")");
             }
             tokens.poll();
             //pokud je slozena zavorka, cti vnoreny objekt
-            if (t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
+            if (nextToken.getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
                 object.addValue(readJSObject(tokens,name));
-                t = tokens.peek();
+                nextToken = tokens.peek();
                 continue;
             }
             object.addValue(readValue(tokens,name));
-            t = tokens.peek();
+            nextToken = tokens.peek();
 
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }
-            t = tokens.peek();
+            nextToken = tokens.peek();
         }
-        t = tokens.peek();
-        if(!t.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
-            throw new JSONErrorException("Curly bracket END expected at ("+t.getRow()+", "+t.getColumn()+")");
+        nextToken = tokens.peek();
+        if(!nextToken.getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
+            throw new JSONErrorException("Curly bracket END expected at ("+nextToken.getRow()+", "+nextToken.getColumn()+")");
         }
         tokens.poll();
         return object;

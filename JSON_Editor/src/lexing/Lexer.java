@@ -16,23 +16,28 @@ public class Lexer {
     }
 
     public List<Lexem> readLexemsFromFile(File file) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(file));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
         List<Lexem> lexems = new LinkedList<>();
         String buffer = "";
         boolean isString = false;
         int row = 0;
-        while(br.ready()){
+        while(bufferedReader.ready()){
             int column = 0;
-            for(char ch : br.readLine().toCharArray()){
+            for(char ch : bufferedReader.readLine().toCharArray()){
                 if(isString && ch!='\"'){
                     buffer+=ch;
                     column++;
                     continue;
                 }
                 switch(ch){
-                    case '\t':
+                    case '\r':
+                    case '\n':
                         break;
                     case ' ':
+                    case '\t':
+                        addLexem(buffer,row,column,lexems);
+                        buffer = "";
+                        break;
                     case '{':
                     case '}':
                     case '[':
@@ -42,22 +47,16 @@ public class Lexer {
                     case ',':
                     case '\'':
                     case ':':
-                        int col = column;
-                        if(buffer.length()>0){
-                            if(buffer.length()>1) {
-                                col = column - buffer.length();
-                            }
-                            lexems.add(new Lexem(row,col,buffer));
-                            buffer = "";
-                        }
-                        lexems.add(new Lexem(row,column,String.valueOf(ch)));
+                        addLexem(buffer,row,column,lexems);
+                        buffer = "";
+                        addLexem(String.valueOf(ch),row,column,lexems);
                         break;
                     case '\"':
-                        if(buffer.length()>0){
-                            lexems.add(new Lexem(row,column-buffer.length(),buffer));
-                            buffer = "";
-                        }
-                        lexems.add(new Lexem(row,column,String.valueOf(ch)));
+                        //je to konec retezce - prida se i retezec
+                        addLexem(buffer,row,column,lexems);
+                        buffer = "";
+                        //pridaji se uvozovky
+                        addLexem(String.valueOf(ch),row,column,lexems);
                         isString = !isString;
                         break;
                     default:
@@ -65,17 +64,21 @@ public class Lexer {
                         column++;
                         break;
                 }
-
             }
-            if(buffer.length()>0){
-                int col = column;
-                if(buffer.length()>1)
-                    col = column-buffer.length();
-                lexems.add(new Lexem(row,col,buffer));
-                buffer = "";
-            }
+            addLexem(buffer,row,column,lexems);
+            buffer = "";
             row++;
         }
         return lexems;
+    }
+
+    private void addLexem(String buffer, int row, int column, List<Lexem> lexems){
+        int col = column;
+        if(buffer.length()>0){
+            if(buffer.length()>1) {
+                col = column - buffer.length();
+            }
+            lexems.add(new Lexem(row,col,buffer));
+        }
     }
 }
