@@ -1,6 +1,6 @@
 package values;
 
-public class StringValue extends Value {
+public class StringValue extends Value<String> {
     private String value;
 
     public StringValue(String name,String value) {
@@ -12,13 +12,13 @@ public class StringValue extends Value {
     }
 
     @Override
-    public Object getValue() {
+    public String getValue() {
         return value;
     }
 
     @Override
-    public void setValue(Object value) {
-        this.value = (String)value;
+    public void setValue(String value) {
+        this.value = value;
     }
 
     @Override

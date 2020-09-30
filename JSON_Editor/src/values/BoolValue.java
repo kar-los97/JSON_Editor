@@ -1,6 +1,6 @@
 package values;
 
-public class BoolValue extends Value{
+public class BoolValue extends Value<Boolean>{
 
     private boolean value;
 
@@ -13,12 +13,12 @@ public class BoolValue extends Value{
     }
 
     @Override
-    public Object getValue() {
-        return null;
+    public Boolean getValue() {
+        return value;
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(Boolean value) {
 
     }
 }

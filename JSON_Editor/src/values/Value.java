@@ -2,7 +2,7 @@ package values;
 
 import exceptions.JSONErrorException;
 
-public abstract class Value {
+public abstract class Value<T> {
     private String name;
     public String getName(){
         return name;
@@ -14,6 +14,6 @@ public abstract class Value {
     public Value(){
 
     }
-    public abstract Object getValue();
-    public abstract void setValue(Object value) throws JSONErrorException;
+    public abstract T getValue();
+    public abstract void setValue(T value) throws JSONErrorException;
 }

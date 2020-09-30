@@ -7,7 +7,7 @@ import exceptions.JSONErrorException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class JSObject extends Value {
+public class JSObject extends Value<List<Value>> {
     private List<Value> values;
 
     public JSObject(List<Value> values) {
@@ -31,12 +31,12 @@ public class JSObject extends Value {
     }
 
     @Override
-    public Object getValue() {
+    public List<Value> getValue() {
         return values;
     }
 
     @Override
-    public void setValue(Object value) {
+    public void setValue(List<Value> value) {
 
     }
 
