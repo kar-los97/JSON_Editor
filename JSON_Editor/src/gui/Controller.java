@@ -1,4 +1,4 @@
-package sample;
+package gui;
 
 import exceptions.JSONErrorException;
 import javafx.fxml.FXML;

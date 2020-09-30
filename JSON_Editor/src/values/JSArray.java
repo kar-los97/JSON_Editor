@@ -8,6 +8,7 @@ import java.util.List;
 
 public class JSArray extends Value<List<Value>>{
     private List<Value> values;
+
     public JSArray() {
         values = new ArrayList<>();
     }
@@ -24,10 +25,6 @@ public class JSArray extends Value<List<Value>>{
 
     @Override
     public void setValue(List<Value> value) throws JSONErrorException {
-        if(value instanceof List && ((List<Value>) value).get(0) instanceof Value){
-            values = value;
-        }else{
-            throw new JSONErrorException("List of values from array expected!");
-        }
+        values = value;
     }
 }

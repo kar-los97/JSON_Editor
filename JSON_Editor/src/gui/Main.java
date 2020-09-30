@@ -1,21 +1,12 @@
-package sample;
+package gui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import lexing.Lexem;
-import lexing.Lexer;
-import reading.JSReader;
-import tokens.Token;
-import values.JSObject;
 
-import java.io.File;
 import java.io.IOException;
-import java.util.List;
-import java.util.Queue;
 
 public class Main extends Application {
     public static Stage stage;

@@ -1,0 +1,17 @@
+{
+	"nullValue": null,
+	"numberValue": 100,
+	"stringValue": "string",
+	"boolValue": true,
+	"arraValue": [
+		"hodnota",
+		1,
+		true,
+		null
+	],
+	"hodnota": 20,
+	"objekt":{
+		"vnoreny1": 20,
+		"vnoreny2": "Ahoj"
+	}
+}
