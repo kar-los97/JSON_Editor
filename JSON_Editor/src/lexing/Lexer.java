@@ -1,11 +1,16 @@
 package lexing;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Queue;
 
 public class Lexer {
+    private char[] notImportantChars = {'\r', '\n'};
+    private char [] whiteSpaceChars = {' ','\t'};
+    private char [] separetingChars = {'{', '}','[',']','(', ')', ',', '\'', ':'};
+
     private Lexer(){
     }
 
@@ -13,6 +18,33 @@ public class Lexer {
 
     public static Lexer getInstance(){
         return instance;
+    }
+
+    private boolean isNotImportantChar(char ch){
+        for(int i = 0; i<notImportantChars.length;i++){
+            if(notImportantChars[i]==ch){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isWhiteSpaceChar(char ch){
+        for(int i = 0; i<whiteSpaceChars.length;i++){
+            if(whiteSpaceChars[i]==ch){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isSeparatingChar(char ch){
+        for(int i = 0; i<separetingChars.length;i++){
+            if(separetingChars[i]==ch){
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<Lexem> readLexemsFromFile(File file) throws IOException {
@@ -29,41 +61,30 @@ public class Lexer {
                     column++;
                     continue;
                 }
-                switch(ch){
-                    case '\r':
-                    case '\n':
-                        break;
-                    case ' ':
-                    case '\t':
-                        addLexem(buffer,row,column,lexems);
-                        buffer = "";
-                        break;
-                    case '{':
-                    case '}':
-                    case '[':
-                    case ']':
-                    case '(':
-                    case ')':
-                    case ',':
-                    case '\'':
-                    case ':':
-                        addLexem(buffer,row,column,lexems);
-                        buffer = "";
-                        addLexem(String.valueOf(ch),row,column,lexems);
-                        break;
-                    case '\"':
-                        //je to konec retezce - prida se i retezec
-                        addLexem(buffer,row,column,lexems);
-                        buffer = "";
-                        //pridaji se uvozovky
-                        addLexem(String.valueOf(ch),row,column,lexems);
-                        isString = !isString;
-                        break;
-                    default:
-                        buffer+=ch;
-                        column++;
-                        break;
+                if(isNotImportantChar(ch)){
+                    continue;
                 }
+                if(isWhiteSpaceChar(ch)){
+                    addLexem(buffer,row,column,lexems);
+                    buffer = "";
+                    continue;
+                }
+                if(isSeparatingChar(ch)){
+                    addLexem(buffer,row,column,lexems);
+                    buffer = "";
+                    addLexem(String.valueOf(ch),row,column,lexems);
+                    continue;
+                }if(ch=='\"'){
+                    //je to konec retezce - prida se i retezec
+                    addLexem(buffer,row,column,lexems);
+                    buffer = "";
+                    //pridaji se uvozovky
+                    addLexem(String.valueOf(ch),row,column,lexems);
+                    isString = !isString;
+                    continue;
+                }
+                buffer+=ch;
+                column++;
             }
             addLexem(buffer,row,column,lexems);
             buffer = "";
