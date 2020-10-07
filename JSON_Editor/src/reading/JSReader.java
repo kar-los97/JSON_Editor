@@ -14,7 +14,6 @@ import java.util.Queue;
 public class JSReader implements IJSReader {
 
     public JSReader(){
-
     }
 
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){
@@ -34,11 +33,6 @@ public class JSReader implements IJSReader {
             }
         }
         if(typeOfNewToken==null){
-            /*switch(lexem.getValue()){
-                case "true":
-                case "false":
-                default:
-            }*/
             try{
                 Double.parseDouble(lexem.getValue());
                 typeOfNewToken = TokenType.NUMBER;

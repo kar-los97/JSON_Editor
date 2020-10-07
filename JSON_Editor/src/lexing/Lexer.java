@@ -1,9 +1,8 @@
 package lexing;
 
+
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 public class Lexer {
@@ -47,21 +46,25 @@ public class Lexer {
         return false;
     }
 
+    private boolean isQuontatitonMarksChar(char ch){
+        return ch=='"';
+    }
+
     public List<Lexem> readLexemsFromFile(File file) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-        List<Lexem> lexems = new LinkedList<>();
+        List<Lexem> lexems = new ArrayList<>();
         String buffer = "";
         boolean isString = false;
         int row = 0;
         while(bufferedReader.ready()){
             int column = 0;
             for(char ch : bufferedReader.readLine().toCharArray()){
-                if(isString && ch!='\"'){
-                    buffer+=ch;
-                    column++;
+                if(isNotImportantChar(ch)){
                     continue;
                 }
-                if(isNotImportantChar(ch)){
+                if(isString && !isQuontatitonMarksChar(ch)){
+                    buffer+=ch;
+                    column++;
                     continue;
                 }
                 if(isWhiteSpaceChar(ch)){
@@ -74,7 +77,7 @@ public class Lexer {
                     buffer = "";
                     addLexem(String.valueOf(ch),row,column,lexems);
                     continue;
-                }if(ch=='\"'){
+                }if(isQuontatitonMarksChar(ch)){
                     //je to konec retezce - prida se i retezec
                     addLexem(buffer,row,column,lexems);
                     buffer = "";
