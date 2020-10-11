@@ -33,21 +33,32 @@ public class JSReader implements IJSReader {
         }
     }
 
-    private TokenType getTokenTypeFromLexem(Lexem lexem){
-        if(isLexemNumber(lexem)){
-            return TokenType.NUMBER;
-        }
+    private boolean isLexemBoolean(Lexem lexem){
         switch(lexem.getValue()){
             case "true":
             case "false":
-                return TokenType.BOOLEAN;
+                return true;
+            default:
+                return false;
         }
+    }
+
+    private TokenType getTypicalTypeOfToken(Lexem lexem){
         for (TokenType tokenType: TokenType.values()) {
             if(lexem.getValue().equals(tokenType.getValue())){
                 return tokenType;
             }
         }
         return TokenType.STRING;
+    }
+
+    private TokenType getTokenTypeFromLexem(Lexem lexem){
+        if(isLexemNumber(lexem)){
+            return TokenType.NUMBER;
+        }if(isLexemBoolean(lexem)){
+            return TokenType.BOOLEAN;
+        }
+        return getTypicalTypeOfToken(lexem);
     }
 
     public Token createToken(Lexem lexem){

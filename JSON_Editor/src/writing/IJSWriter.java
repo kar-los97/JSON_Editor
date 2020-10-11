@@ -1,4 +1,4 @@
-package writifilmůng;
+package writing;
 
 import values.JSObject;
 
