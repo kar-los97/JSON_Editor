@@ -34,7 +34,7 @@ public class Controller {
 /*        for(Token t:tokens){
             System.out.println(t);
         }*/
-        JSObject object = JSReader.readJSObject(tokens,null);
+        JSObject object = JSReader.parseJSObject(tokens,null);
 
         TreeItem<String> rootItem = new TreeItem<String> ("{");
         rootItem.setExpanded(true);

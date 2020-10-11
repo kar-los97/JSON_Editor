@@ -66,7 +66,7 @@ public class JSReader implements IJSReader {
         return new Token(typeOfNewToken,lexem.getValue(),lexem.getRow(),lexem.getColumn());
     }
 
-    public JSObject readJSObject(Queue<Token> tokens,String objectName) throws JSONErrorException {
+    public JSObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException {
         if(!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
             throw new JSONErrorException("Curly bracket START expteat ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
@@ -98,7 +98,7 @@ public class JSReader implements IJSReader {
             tokens.poll();
             //pokud je slozena zavorka, cti vnoreny objekt
             if (tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
-                object.addValue(readJSObject(tokens,name));
+                object.addValue(parseJSObject(tokens,name));
                 continue;
             }
             object.addValue(readValue(tokens,name));
@@ -159,7 +159,7 @@ public class JSReader implements IJSReader {
                 tokens.poll();
                 return readJSArray(tokens,name);
             case CURLY_BRACKET_START:
-                return readJSObject(tokens,name);
+                return parseJSObject(tokens,name);
             case NULL:
                 return readNullValue(tokens,name);
             case QUONTATION_MARKS:

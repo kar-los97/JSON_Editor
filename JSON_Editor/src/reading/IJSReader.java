@@ -11,5 +11,5 @@ import java.util.Queue;
 public interface IJSReader {
     Queue<Token> createTokensFromLexems(List<Lexem> lexems);
     Token createToken(Lexem l);
-    JSObject readJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException;
+    JSObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException;
 }
