@@ -1,4 +1,4 @@
 package writing;
 
-public class JSWriter implements IJSWriter {
+public class JSWriter {
 }

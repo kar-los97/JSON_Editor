@@ -24,30 +24,34 @@ public class JSReader implements IJSReader {
         return tokens;
     }
 
-    public Token createToken(Lexem lexem){
-        TokenType typeOfNewToken = null;
+    private boolean isLexemNumber(Lexem lexem){
+        try{
+            Double.parseDouble(lexem.getValue());
+            return true;
+        }catch (NumberFormatException ex){
+            return false;
+        }
+    }
+
+    private TokenType getTokenTypeFromLexem(Lexem lexem){
+        if(isLexemNumber(lexem)){
+            return TokenType.NUMBER;
+        }
+        switch(lexem.getValue()){
+            case "true":
+            case "false":
+                return TokenType.BOOLEAN;
+        }
         for (TokenType tokenType: TokenType.values()) {
             if(lexem.getValue().equals(tokenType.getValue())){
-                typeOfNewToken = tokenType;
-                break;
+                return tokenType;
             }
         }
-        if(typeOfNewToken==null){
-            try{
-                Double.parseDouble(lexem.getValue());
-                typeOfNewToken = TokenType.NUMBER;
-            }catch (NumberFormatException ex){
-                switch(lexem.getValue()){
-                    case "true":
-                    case "false":
-                        typeOfNewToken = TokenType.BOOLEAN;
-                        break;
-                    default:
-                        typeOfNewToken = TokenType.STRING;
-                        break;
-                }
-            }
-        }
+        return TokenType.STRING;
+    }
+
+    public Token createToken(Lexem lexem){
+        TokenType typeOfNewToken = getTokenTypeFromLexem(lexem);
         return new Token(typeOfNewToken,lexem.getValue(),lexem.getRow(),lexem.getColumn());
     }
 
