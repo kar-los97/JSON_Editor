@@ -7,8 +7,8 @@ import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
 import lexing.Lexem;
 import lexing.Lexer;
-import reading.IJSReader;
-import reading.JSReader;
+import parsing.IJSParser;
+import parsing.JSParser;
 import tokens.Token;
 import values.JSArray;
 import values.JSObject;
@@ -29,7 +29,7 @@ public class Controller {
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         File f = chooser.showOpenDialog(Main.stage);
         List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(f);
-        IJSReader JSReader = new JSReader();
+        IJSParser JSReader = new JSParser();
         Queue<Token> tokens = JSReader.createTokensFromLexems(lexems);
 /*        for(Token t:tokens){
             System.out.println(t);

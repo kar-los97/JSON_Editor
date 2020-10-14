@@ -1,4 +1,4 @@
-package reading;
+package parsing;
 
 import enums.TokenType;
 import exceptions.JSONErrorException;
@@ -11,9 +11,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class JSReader implements IJSReader {
+public class JSParser implements IJSParser {
 
-    public JSReader(){
+    public JSParser(){
     }
 
     private boolean verifyTokensQueue(Queue<Token>tokens){
@@ -84,7 +84,7 @@ public class JSReader implements IJSReader {
         }else{
             object = new JSObject();
         }
-        readJSObjectValues(tokens,object);
+        parseJSObjectValues(tokens,object);
         //ocekava se ukoncovaci zavorka
         if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
             throw new JSONErrorException("Curly bracket END expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
@@ -93,11 +93,11 @@ public class JSReader implements IJSReader {
         return object;
     }
 
-    private void readJSObjectValues(Queue<Token> tokens, JSObject object) throws JSONErrorException {
+    private void parseJSObjectValues(Queue<Token> tokens, JSObject object) throws JSONErrorException {
         //dokud neni ukoncovaci zavorka - cti hodnoty
         while(verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
             //nacteni nazvu
-            String name = readStringValue(tokens);
+            String name = parseStringValue(tokens);
             //ocekava se :
             if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
                 throw new JSONErrorException("Colon expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
@@ -108,14 +108,14 @@ public class JSReader implements IJSReader {
                 object.addValue(parseJSObject(tokens,name));
                 continue;
             }
-            object.addValue(readValue(tokens,name));
+            object.addValue(parseValue(tokens,name));
             if(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }
         }
     }
 
-    private String readStringValue(Queue<Token>tokens) throws JSONErrorException {
+    private String parseStringValue(Queue<Token>tokens) throws JSONErrorException {
         if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
             throw new JSONErrorException("Quontation mark expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
@@ -132,27 +132,23 @@ public class JSReader implements IJSReader {
         return value;
     }
 
-    private boolean readBoolValue(Queue<Token> tokens) throws JSONErrorException {
-        switch (tokens.peek().getValue()){
-            case "true":
-                tokens.poll();
-                return true;
-            case "false":
-                tokens.poll();
-                return false;
-            default:
-                throw new JSONErrorException("Boolean value expected (\"true\" or \"false\" at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
+    private boolean parseBoolValue(Queue<Token> tokens) throws JSONErrorException {
+        if(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.BOOLEAN)){
+            boolean boolValue = Boolean.parseBoolean(tokens.peek().getValue());
+            tokens.poll();
+            return boolValue;
         }
+        throw new JSONErrorException("Boolean value expected (\"true\" or \"false\" at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
     }
 
-    private double readNumberValue(Queue<Token> tokens) throws JSONErrorException {
+    private double parseNumberValue(Queue<Token> tokens) throws JSONErrorException {
         if(tokens.peek().getTypeOfToken().equals(TokenType.NUMBER)){
             return Double.parseDouble(tokens.poll().getValue());
         }
         throw new JSONErrorException("Number value expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
     }
 
-    private NullValue readNullValue(Queue<Token>tokens, String name) throws JSONErrorException {
+    private NullValue parseNullValue(Queue<Token>tokens, String name) throws JSONErrorException {
         if(tokens.peek().getTypeOfToken().equals(TokenType.NULL)){
             tokens.poll();
             return new NullValue(name);
@@ -160,30 +156,30 @@ public class JSReader implements IJSReader {
         throw new JSONErrorException("Null expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
     }
 
-    private Value readValue(Queue<Token> tokens, String name) throws JSONErrorException {
+    private Value parseValue(Queue<Token> tokens, String name) throws JSONErrorException {
         switch (tokens.peek().getTypeOfToken()){
             case SQUARE_BRACKET_START:
                 tokens.poll();
-                return readJSArray(tokens,name);
+                return parseJSArray(tokens,name);
             case CURLY_BRACKET_START:
                 return parseJSObject(tokens,name);
             case NULL:
-                return readNullValue(tokens,name);
+                return parseNullValue(tokens,name);
             case QUONTATION_MARKS:
-                return new StringValue(name,readStringValue(tokens));
+                return new StringValue(name, parseStringValue(tokens));
             case BOOLEAN:
-                return new BoolValue(name,readBoolValue(tokens));
+                return new BoolValue(name, parseBoolValue(tokens));
             case NUMBER:
-                return new NumberValue(name,readNumberValue(tokens));
+                return new NumberValue(name, parseNumberValue(tokens));
             default:
                 throw new JSONErrorException("Unexpected token at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
     }
 
-    private JSArray readJSArray(Queue<Token> tokens, String name) throws JSONErrorException {
+    private JSArray parseJSArray(Queue<Token> tokens, String name) throws JSONErrorException {
         List<Value> values = new ArrayList<>();
         while(!tokens.peek().getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
-            values.add(readValue(tokens,name));
+            values.add(parseValue(tokens,name));
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }

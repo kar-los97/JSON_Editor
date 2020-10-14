@@ -1,4 +1,4 @@
-package reading;
+package parsing;
 
 import exceptions.JSONErrorException;
 import lexing.Lexem;
@@ -8,7 +8,7 @@ import values.JSObject;
 import java.util.List;
 import java.util.Queue;
 
-public interface IJSReader {
+public interface IJSParser {
     Queue<Token> createTokensFromLexems(List<Lexem> lexems);
     Token createToken(Lexem l);
     JSObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException;
