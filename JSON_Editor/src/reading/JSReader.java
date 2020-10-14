@@ -16,6 +16,13 @@ public class JSReader implements IJSReader {
     public JSReader(){
     }
 
+    private boolean verifyTokensQueue(Queue<Token>tokens){
+        if(tokens.isEmpty()||tokens==null){
+            return false;
+        }
+        return true;
+    }
+
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){
         Queue<Token> tokens = new LinkedList<>();
         for(Lexem lexem:lexems){
@@ -67,7 +74,7 @@ public class JSReader implements IJSReader {
     }
 
     public JSObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException {
-        if(!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
+        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
             throw new JSONErrorException("Curly bracket START expteat ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
@@ -79,7 +86,7 @@ public class JSReader implements IJSReader {
         }
         readJSObjectValues(tokens,object);
         //ocekava se ukoncovaci zavorka
-        if(!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
+        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
             throw new JSONErrorException("Curly bracket END expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
@@ -88,37 +95,37 @@ public class JSReader implements IJSReader {
 
     private void readJSObjectValues(Queue<Token> tokens, JSObject object) throws JSONErrorException {
         //dokud neni ukoncovaci zavorka - cti hodnoty
-        while(!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
+        while(verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
             //nacteni nazvu
             String name = readStringValue(tokens);
             //ocekava se :
-            if(!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
+            if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
                 throw new JSONErrorException("Colon expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
             }
             tokens.poll();
             //pokud je slozena zavorka, cti vnoreny objekt
-            if (tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
+            if (verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
                 object.addValue(parseJSObject(tokens,name));
                 continue;
             }
             object.addValue(readValue(tokens,name));
-            if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
+            if(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }
         }
     }
 
     private String readStringValue(Queue<Token>tokens) throws JSONErrorException {
-        if(!tokens.peek().getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
             throw new JSONErrorException("Quontation mark expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
-        if(!tokens.peek().getTypeOfToken().equals(TokenType.STRING)){
+        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.STRING)){
             throw new JSONErrorException("String value expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         String value = tokens.peek().getValue();
         tokens.poll();
-        if(!tokens.peek().getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
+        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.QUONTATION_MARKS)){
             throw new JSONErrorException("Quontation mark expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
