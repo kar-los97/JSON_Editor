@@ -1,7 +1,6 @@
 package values;
 
 import exceptions.JSONErrorException;
-import values.Value;
 
 import java.util.ArrayList;
 import java.util.List;

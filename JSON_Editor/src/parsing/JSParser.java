@@ -17,10 +17,7 @@ public class JSParser implements IJSParser {
     }
 
     private boolean verifyTokensQueue(Queue<Token>tokens){
-        if(tokens.isEmpty()||tokens==null){
-            return false;
-        }
-        return true;
+        return !tokens.isEmpty()||tokens!=null;
     }
 
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){

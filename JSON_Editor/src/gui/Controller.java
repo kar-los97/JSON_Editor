@@ -1,6 +1,7 @@
 package gui;
 
 import exceptions.JSONErrorException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
@@ -13,6 +14,8 @@ import tokens.Token;
 import values.JSArray;
 import values.JSObject;
 import values.Value;
+import writing.IJSWriter;
+import writing.JSWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +23,7 @@ import java.util.List;
 import java.util.Queue;
 
 public class Controller {
+    JSObject object;
     @FXML
     TreeView<String> treeJS;
 
@@ -34,7 +38,7 @@ public class Controller {
 /*        for(Token t:tokens){
             System.out.println(t);
         }*/
-        JSObject object = JSReader.parseJSObject(tokens,null);
+        object = JSReader.parseJSObject(tokens,null);
 
         TreeItem<String> rootItem = new TreeItem<String> ("{");
         rootItem.setExpanded(true);
@@ -60,5 +64,15 @@ public class Controller {
 
     private void createTreeObject(JSObject object, TreeItem<String> item){
 
+    }
+
+    public void saveJSON(ActionEvent actionEvent) throws IOException {
+        if(object!=null){
+            IJSWriter jsWriter = new JSWriter();
+            FileChooser chooser = new FileChooser();
+            chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
+            File file = chooser.showSaveDialog(Main.stage);
+            jsWriter.writeJSObject(object,file);
+        }
     }
 }

@@ -19,6 +19,11 @@ public class BoolValue extends Value<Boolean>{
 
     @Override
     public void setValue(Boolean value) {
+        this.value = value;
+    }
 
+    @Override
+    public String toString() {
+        return "\""+this.getName()+"\""+" : "+ value;
     }
 }
