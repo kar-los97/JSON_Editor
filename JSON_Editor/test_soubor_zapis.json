@@ -1,0 +1,11 @@
+{
+	"numberValue": 100,
+	"stringValue": "string",
+	"nullValue": null,
+	"boolValue": true,
+	"pole": [
+		1,
+		2,
+		3
+	]
+}
