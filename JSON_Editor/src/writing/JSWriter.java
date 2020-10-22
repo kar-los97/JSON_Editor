@@ -8,9 +8,20 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.List;
 
 public class JSWriter implements IJSWriter {
     private int numberOfTabs;
+    private String buffer;
+
+    public JSWriter(){
+        numberOfTabs = 0;
+        buffer = "";
+    }
+
+    private boolean isValueListValid(List<Value> list){
+        return list!=null&&!list.isEmpty();
+    }
 
     private void writeTabs(BufferedWriter writer) throws IOException {
         if(numberOfTabs>=0){
@@ -52,11 +63,13 @@ public class JSWriter implements IJSWriter {
     }
 
     private void writeJSObjectValues(JSObject value, BufferedWriter bufferedWriter) throws IOException {
-        for (int i = 0;i<value.getValue().size()-1;i++) {
+        for (int i = 0; i < value.getValue().size() - 1; i++) {
             writeJSValue(value.getValue().get(i), bufferedWriter);
             bufferedWriter.write(",");
         }
-        writeJSValue(value.getValue().get(value.getValue().size()-1), bufferedWriter);
+        if(isValueListValid(value.getValue())) {
+            writeJSValue(value.getValue().get(value.getValue().size() - 1), bufferedWriter);
+        }
         bufferedWriter.write("\n}");
     }
 
@@ -64,6 +77,7 @@ public class JSWriter implements IJSWriter {
         writeStringValue(array.getName(),bufferedWriter);
         bufferedWriter.write(": [\n");
         numberOfTabs++;
+        /* upravit - brat v potaz - ze muze v poli byt objekt ci dalsi pole */
         for(int i = 0; i<array.getValue().size()-1;i++){
             writeTabs(bufferedWriter);
             bufferedWriter.write(array.getValue().get(i).getValue().toString());
@@ -71,26 +85,16 @@ public class JSWriter implements IJSWriter {
             bufferedWriter.write("\n");
         }
         writeTabs(bufferedWriter);
-        bufferedWriter.write(array.getValue().get(array.getValue().size()-1).getValue().toString()+"\n");
+        if(isValueListValid(array.getValue())) {
+            bufferedWriter.write(array.getValue().get(array.getValue().size() - 1).getValue().toString() + "\n");
+        }
         numberOfTabs--;
         writeTabs(bufferedWriter);
         bufferedWriter.write("]");
 
     }
 
-    private void writeValue(Value value, BufferedWriter bufferedWriter){
-        
-    }
-
     private void writeStringValue(String stringValue, BufferedWriter bufferedWriter) throws IOException {
         bufferedWriter.write("\""+ stringValue + "\"");
-    }
-
-    private void writeNumberValue(Double numberValue, BufferedWriter bufferedWriter) throws IOException {
-        bufferedWriter.write(numberValue.toString());
-    }
-
-    private void writeBooleanValue(Boolean boolValue, BufferedWriter bufferedWriter) throws IOException {
-        bufferedWriter.write(boolValue.toString());
     }
 }

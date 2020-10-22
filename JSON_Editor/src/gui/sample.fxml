@@ -1,11 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.Controller">
    <children>
-      <TreeView fx:id="treeJS" layoutX="200.0" layoutY="91.0" prefHeight="200.0" prefWidth="200.0" />
-      <Button fx:id="saveButton" layoutX="116.0" layoutY="340.0" mnemonicParsing="false" onAction="#saveJSON" text="Save" />
+      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+         <center>
+            <HBox BorderPane.alignment="CENTER">
+               <children>
+                  <TreeView fx:id="treeJS" prefHeight="331.0" prefWidth="529.0">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin></TreeView>
+                  <TextArea fx:id="textAreaJSON">
+                     <HBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </HBox.margin></TextArea>
+               </children>
+            </HBox>
+         </center>
+         <bottom>
+            <HBox prefHeight="49.0" prefWidth="590.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Button fx:id="saveButton" mnemonicParsing="false" onAction="#saveJSON" text="Save" />
+               </children>
+            </HBox>
+         </bottom></BorderPane>
    </children>
-</Pane>
+</AnchorPane>

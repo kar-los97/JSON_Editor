@@ -35,14 +35,11 @@ public class Controller {
         List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(f);
         IJSParser JSReader = new JSParser();
         Queue<Token> tokens = JSReader.createTokensFromLexems(lexems);
-/*        for(Token t:tokens){
-            System.out.println(t);
-        }*/
         object = JSReader.parseJSObject(tokens,null);
 
         TreeItem<String> rootItem = new TreeItem<String> ("{");
         rootItem.setExpanded(true);
-        for (Value v:(List<Value>)object.getValue()) {
+        for (Value v:object.getValue()) {
             if(v instanceof JSArray){
                 TreeItem<String> trItem = new TreeItem<>("\""+v.getName()+"\""+": [");
                 for (Value va:(List<Value>)v.getValue()) {

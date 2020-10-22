@@ -103,6 +103,9 @@ public class JSParser implements IJSParser {
             //pokud je slozena zavorka, cti vnoreny objekt
             if (verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
                 object.addValue(parseJSObject(tokens,name));
+                if(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
+                    tokens.poll();
+                }
                 continue;
             }
             object.addValue(parseValue(tokens,name));
