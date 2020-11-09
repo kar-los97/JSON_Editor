@@ -10,13 +10,14 @@ import lexing.Lexem;
 import lexing.Lexer;
 import parsing.IJSParser;
 import parsing.JSParser;
+import reading.IJSReader;
+import reading.JSReader;
 import tokens.Token;
 import values.JSArray;
 import values.JSObject;
 import values.Value;
 import writing.IJSWriter;
 import writing.JSWriter;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +33,9 @@ public class Controller {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         File f = chooser.showOpenDialog(Main.stage);
-        List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(f);
+        IJSReader jsReader = new JSReader();
+        String jsonAsString = jsReader.readJSONFromFile(f);
+        List<Lexem> lexems = Lexer.getInstance().readLexemsFromFile(jsonAsString);
         IJSParser JSReader = new JSParser();
         Queue<Token> tokens = JSReader.createTokensFromLexems(lexems);
         object = JSReader.parseJSObject(tokens,null);
@@ -63,7 +66,7 @@ public class Controller {
 
     }
 
-    public void saveJSON(ActionEvent actionEvent) throws IOException {
+    public void saveJSON(ActionEvent actionEvent) throws IOException, JSONErrorException {
         if(object!=null){
             IJSWriter jsWriter = new JSWriter();
             FileChooser chooser = new FileChooser();

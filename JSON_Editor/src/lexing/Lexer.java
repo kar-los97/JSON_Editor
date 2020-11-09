@@ -50,15 +50,13 @@ public class Lexer {
         return ch=='"';
     }
 
-    public List<Lexem> readLexemsFromFile(File file) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+    public List<Lexem> readLexemsFromFile(String jsonAsString) throws IOException {
         List<Lexem> lexems = new ArrayList<>();
         String buffer = "";
         boolean isString = false;
         int row = 0;
-        while(bufferedReader.ready()){
             int column = 0;
-            for(char ch : bufferedReader.readLine().toCharArray()){
+            for(char ch : jsonAsString.toCharArray()){
                 if(isNotImportantChar(ch)){
                     continue;
                 }
@@ -92,7 +90,7 @@ public class Lexer {
             addLexem(buffer,row,column,lexems);
             buffer = "";
             row++;
-        }
+
         return lexems;
     }
 

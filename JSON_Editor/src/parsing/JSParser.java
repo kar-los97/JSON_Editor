@@ -159,7 +159,6 @@ public class JSParser implements IJSParser {
     private Value parseValue(Queue<Token> tokens, String name) throws JSONErrorException {
         switch (tokens.peek().getTypeOfToken()){
             case SQUARE_BRACKET_START:
-                tokens.poll();
                 return parseJSArray(tokens,name);
             case CURLY_BRACKET_START:
                 return parseJSObject(tokens,name);
@@ -177,12 +176,21 @@ public class JSParser implements IJSParser {
     }
 
     private JSArray parseJSArray(Queue<Token> tokens, String name) throws JSONErrorException {
+        if(!tokens.peek().getTypeOfToken().equals(TokenType.SQUARE_BRACKET_START)){
+            throw new JSONErrorException("SQUARE BRACKET START expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
+        }
+        tokens.poll();
         List<Value> values = new ArrayList<>();
         while(!tokens.peek().getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
             values.add(parseValue(tokens,name));
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
+            }else{
+                break;
             }
+        }
+        if(!tokens.peek().getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
+            throw new JSONErrorException("SQUARE BRACKET END expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
         return new JSArray(name,values);
