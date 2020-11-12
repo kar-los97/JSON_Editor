@@ -3,6 +3,7 @@ package gui;
 import exceptions.JSONErrorException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.stage.FileChooser;
@@ -16,8 +17,11 @@ import tokens.Token;
 import values.JSArray;
 import values.JSObject;
 import values.Value;
-import writing.IJSWriter;
-import writing.JSWriter;
+import converting.IJSONConverter;
+import converting.JSONConverter;
+import writing.IJSONWriter;
+import writing.JSONWriter;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -27,6 +31,8 @@ public class Controller {
     JSObject object;
     @FXML
     TreeView<String> treeJS;
+    @FXML
+    TextArea textAreaJSON;
 
     @FXML
     private void initialize() throws IOException, JSONErrorException {
@@ -60,6 +66,8 @@ public class Controller {
             }
         }
         treeJS.setRoot(rootItem);
+        IJSONConverter JSONConverter = new JSONConverter();
+        textAreaJSON.setText(JSONConverter.convertJSON(object));
     }
 
     private void createTreeObject(JSObject object, TreeItem<String> item){
@@ -68,11 +76,11 @@ public class Controller {
 
     public void saveJSON(ActionEvent actionEvent) throws IOException, JSONErrorException {
         if(object!=null){
-            IJSWriter jsWriter = new JSWriter();
+            IJSONWriter JSONWriter = new JSONWriter();
             FileChooser chooser = new FileChooser();
             chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
             File file = chooser.showSaveDialog(Main.stage);
-            jsWriter.writeJSObject(object,file);
+            JSONWriter.writeJSONToFile(object,file);
         }
     }
 }
