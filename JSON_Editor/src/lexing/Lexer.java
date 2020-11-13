@@ -50,7 +50,7 @@ public class Lexer {
         return ch=='"';
     }
 
-    public List<Lexem> readLexemsFromFile(String jsonAsString) throws IOException {
+    public List<Lexem> createLexemsFromString(String jsonAsString) throws IOException {
         List<Lexem> lexems = new ArrayList<>();
         String buffer = "";
         boolean isString = false;

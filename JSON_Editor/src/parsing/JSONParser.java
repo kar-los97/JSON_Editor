@@ -5,15 +5,15 @@ import exceptions.JSONErrorException;
 import lexing.Lexem;
 import values.*;
 import tokens.Token;
-import values.JSArray;
+import values.JSONArray;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-public class JSParser implements IJSParser {
+public class JSONParser implements IJSONParser {
 
-    public JSParser(){
+    public JSONParser(){
     }
 
     private boolean verifyTokensQueue(Queue<Token>tokens){
@@ -70,16 +70,16 @@ public class JSParser implements IJSParser {
         return new Token(typeOfNewToken,lexem.getValue(),lexem.getRow(),lexem.getColumn());
     }
 
-    public JSObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException {
+    public JSONObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException {
         if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
             throw new JSONErrorException("Curly bracket START expteat ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
-        JSObject object;
+        JSONObject object;
         if(objectName!=null && objectName.length()>0){
-            object = new JSObject(objectName);
+            object = new JSONObject(objectName);
         }else{
-            object = new JSObject();
+            object = new JSONObject();
         }
         parseJSObjectValues(tokens,object);
         //ocekava se ukoncovaci zavorka
@@ -90,11 +90,18 @@ public class JSParser implements IJSParser {
         return object;
     }
 
-    private void parseJSObjectValues(Queue<Token> tokens, JSObject object) throws JSONErrorException {
+    private void parseJSObjectValues(Queue<Token> tokens, JSONObject object) throws JSONErrorException {
+        String name = parseStringValue(tokens);
+        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
+            throw new JSONErrorException("Colon expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
+        }
+        tokens.poll();
+        object.addValue(parseValue(tokens,name));
         //dokud neni ukoncovaci zavorka - cti hodnoty
-        while(verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)&&!tokens.isEmpty()){
+        while(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
+            tokens.poll();
             //nacteni nazvu
-            String name = parseStringValue(tokens);
+             name = parseStringValue(tokens);
             //ocekava se :
             if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
                 throw new JSONErrorException("Colon expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
@@ -103,15 +110,12 @@ public class JSParser implements IJSParser {
             //pokud je slozena zavorka, cti vnoreny objekt
             if (verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)) {
                 object.addValue(parseJSObject(tokens,name));
-                if(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
-                    tokens.poll();
-                }
                 continue;
             }
             object.addValue(parseValue(tokens,name));
-            if(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
-                tokens.poll();
-            }
+        }
+        if(verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
+            throw new JSONErrorException("Curly bracket END expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
     }
 
@@ -148,15 +152,15 @@ public class JSParser implements IJSParser {
         throw new JSONErrorException("Number value expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
     }
 
-    private NullValue parseNullValue(Queue<Token>tokens, String name) throws JSONErrorException {
+    private JSONNullJSONValue parseNullValue(Queue<Token>tokens, String name) throws JSONErrorException {
         if(tokens.peek().getTypeOfToken().equals(TokenType.NULL)){
             tokens.poll();
-            return new NullValue(name);
+            return new JSONNullJSONValue(name);
         }
         throw new JSONErrorException("Null expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
     }
 
-    private Value parseValue(Queue<Token> tokens, String name) throws JSONErrorException {
+    private JSONValue parseValue(Queue<Token> tokens, String name) throws JSONErrorException {
         switch (tokens.peek().getTypeOfToken()){
             case SQUARE_BRACKET_START:
                 return parseJSArray(tokens,name);
@@ -165,24 +169,24 @@ public class JSParser implements IJSParser {
             case NULL:
                 return parseNullValue(tokens,name);
             case QUONTATION_MARKS:
-                return new StringValue(name, parseStringValue(tokens));
+                return new JSONStringJSONValue(name, parseStringValue(tokens));
             case BOOLEAN:
-                return new BoolValue(name, parseBoolValue(tokens));
+                return new JSONBoolJSONValue(name, parseBoolValue(tokens));
             case NUMBER:
-                return new NumberValue(name, parseNumberValue(tokens));
+                return new JSONNumberJSONValue(name, parseNumberValue(tokens));
             default:
                 throw new JSONErrorException("Unexpected token at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
     }
 
-    private JSArray parseJSArray(Queue<Token> tokens, String name) throws JSONErrorException {
+    private JSONArray parseJSArray(Queue<Token> tokens, String name) throws JSONErrorException {
         if(!tokens.peek().getTypeOfToken().equals(TokenType.SQUARE_BRACKET_START)){
             throw new JSONErrorException("SQUARE BRACKET START expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
-        List<Value> values = new ArrayList<>();
+        List<JSONValue> JSONValues = new ArrayList<>();
         while(!tokens.peek().getTypeOfToken().equals(TokenType.SQUARE_BRACKET_END)){
-            values.add(parseValue(tokens,name));
+            JSONValues.add(parseValue(tokens,name));
             if(tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
                 tokens.poll();
             }else{
@@ -193,7 +197,7 @@ public class JSParser implements IJSParser {
             throw new JSONErrorException("SQUARE BRACKET END expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
-        return new JSArray(name,values);
+        return new JSONArray(name, JSONValues);
     }
 
 }

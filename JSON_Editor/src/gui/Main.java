@@ -12,9 +12,9 @@ public class Main extends Application {
     public static Stage stage;
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("main_window.fxml"));
         primaryStage.setTitle("JSON editor");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root));
         primaryStage.setMaximized(true);
         stage = primaryStage;
         primaryStage.show();

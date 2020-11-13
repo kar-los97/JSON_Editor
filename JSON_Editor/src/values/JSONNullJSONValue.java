@@ -1,7 +1,7 @@
 package values;
 
-public class NullValue extends Value{
-    public NullValue(String name) {
+public class JSONNullJSONValue extends JSONValue {
+    public JSONNullJSONValue(String name) {
         super(name);
     }
 

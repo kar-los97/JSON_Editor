@@ -1,23 +1,24 @@
 package values;
 
-public class NumberValue extends Value<Double> {
-    private double value;
+public class JSONBoolJSONValue extends JSONValue<Boolean> {
 
-    public NumberValue(String name, double value) {
+    private boolean value;
+
+    public JSONBoolJSONValue(String name, boolean value) {
         super(name);
         this.value = value;
     }
 
-    public NumberValue() {
+    public JSONBoolJSONValue() {
     }
 
     @Override
-    public Double getValue() {
+    public Boolean getValue() {
         return value;
     }
 
     @Override
-    public void setValue(Double value) {
+    public void setValue(Boolean value) {
         this.value = value;
     }
 

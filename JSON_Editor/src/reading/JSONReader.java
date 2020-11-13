@@ -2,7 +2,7 @@ package reading;
 
 import java.io.*;
 
-public class JSReader implements IJSReader{
+public class JSONReader implements IJSONReader {
     @Override
     public String readJSONFromFile(File file) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
