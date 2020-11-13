@@ -1,0 +1,23 @@
+{
+	"numberValue": 100.0,
+	"stringValue": "string",
+	"nullValue": null,
+	"boolValue": true,
+	"pole": [
+		1.0,
+		2.0,
+		3.0,
+		[
+			2.0,
+			"ahoj",
+			null,
+			{
+				"hodnota1": 2.0,
+				"hodnota2": 20.0
+			}
+		],
+		{
+			"value": 25.3
+		}
+	]
+}
