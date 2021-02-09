@@ -6,24 +6,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainWindowController">
    <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-         <center>
-            <HBox BorderPane.alignment="CENTER">
-               <children>
-                  <TreeView fx:id="treeJS" prefHeight="331.0" prefWidth="529.0">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin></TreeView>
-                  <TextArea fx:id="textAreaJSON">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin></TextArea>
-               </children>
-            </HBox>
-         </center>
-         <bottom>
-            <HBox prefHeight="49.0" prefWidth="590.0" BorderPane.alignment="CENTER" />
-         </bottom>
+      <BorderPane AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
          <top>
             <MenuBar BorderPane.alignment="CENTER">
               <menus>
@@ -47,6 +30,37 @@
                 </Menu>
               </menus>
             </MenuBar>
-         </top></BorderPane>
+         </top>
+         <bottom>
+            <AnchorPane prefHeight="39.0" prefWidth="590.0" BorderPane.alignment="CENTER">
+               <children>
+                  <HBox layoutY="23.0" prefHeight="26.0" prefWidth="590.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </bottom>
+         <center>
+            <AnchorPane BorderPane.alignment="CENTER">
+               <children>
+                  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <center>
+                        <HBox BorderPane.alignment="CENTER">
+                           <children>
+                              <TreeView fx:id="treeJS" prefHeight="331.0" prefWidth="529.0">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TreeView>
+                              <TextArea fx:id="textAreaJSON">
+                                 <HBox.margin>
+                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                                 </HBox.margin>
+                              </TextArea>
+                           </children>
+                        </HBox>
+                     </center>
+                  </BorderPane>
+               </children>
+            </AnchorPane>
+         </center></BorderPane>
    </children>
 </AnchorPane>
