@@ -91,6 +91,7 @@ public class JSONParser implements IJSONParser {
     }
 
     private void parseJSObjectValues(Queue<Token> tokens, JSONObject object) throws JSONErrorException {
+        //resi, zda objekt neni prazdny
         if(tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
             return;
         }
