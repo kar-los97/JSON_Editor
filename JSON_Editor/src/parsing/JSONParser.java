@@ -91,6 +91,9 @@ public class JSONParser implements IJSONParser {
     }
 
     private void parseJSObjectValues(Queue<Token> tokens, JSONObject object) throws JSONErrorException {
+        if(tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)){
+            return;
+        }
         String name = parseStringValue(tokens);
         if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
             throw new JSONErrorException("Colon expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
