@@ -34,7 +34,10 @@
          <bottom>
             <AnchorPane prefHeight="39.0" prefWidth="590.0" BorderPane.alignment="CENTER">
                <children>
-                  <HBox layoutY="23.0" prefHeight="26.0" prefWidth="590.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                  <HBox layoutY="23.0" prefHeight="26.0" prefWidth="590.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="btRefreshTreeView" mnemonicParsing="false" onAction="#btnRefreshTreeViewOnAction" text="Refresh treeView" />
+                     </children></HBox>
                </children>
             </AnchorPane>
          </bottom>
@@ -45,7 +48,7 @@
                      <center>
                         <HBox BorderPane.alignment="CENTER">
                            <children>
-                              <TreeView fx:id="treeJS" prefHeight="331.0" prefWidth="529.0">
+                              <TreeView fx:id="treeJS" prefHeight="312.0" prefWidth="525.0">
                                  <HBox.margin>
                                     <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                                  </HBox.margin>

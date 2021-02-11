@@ -49,13 +49,12 @@ public class MainWindowController {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         openedJSONFile = chooser.showOpenDialog(Main.stage);
-        IJSONReader jsReader = new JSONReader();
-        String jsonAsString = jsReader.readJSONFromFile(openedJSONFile);
-        List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(jsonAsString);
-        IJSONParser jsParser = new JSONParser();
-        Queue<Token> tokens = jsParser.createTokensFromLexems(lexems);
-        JSONobject = jsParser.parseJSObject(tokens,null);
+        JSONobject = loadJSONFromFile(openedJSONFile);
+        loadJSONToTreeView();
+    }
 
+    private void loadJSONToTreeView() throws IOException, JSONErrorException {
+        treeJS.setRoot(new TreeItem<>());
         TreeItem<String> rootItem = new TreeItem<> ("{");
         rootItem.setExpanded(true);
         for (JSONValue v: JSONobject.getValue()) {
@@ -78,6 +77,23 @@ public class MainWindowController {
         treeJS.setRoot(rootItem);
         IJSONConverter JSONConverter = new JSONConverter();
         textAreaJSON.setText(JSONConverter.convertJSON(JSONobject));
+    }
+
+    private JSONObject loadJSONFromFile(File openenedJSONFile) throws IOException, JSONErrorException {
+        IJSONReader jsReader = new JSONReader();
+        String jsonAsString = jsReader.readJSONFromFile(openedJSONFile);
+        List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(jsonAsString);
+        IJSONParser jsParser = new JSONParser();
+        Queue<Token> tokens = jsParser.createTokensFromLexems(lexems);
+        JSONObject jsonObject = jsParser.parseJSObject(tokens,null);
+        return jsonObject;
+    }
+
+    private JSONObject loadJSONFromTextArea() throws JSONErrorException, IOException {
+        List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(textAreaJSON.getText());
+        IJSONParser jsonParser = new JSONParser();
+        JSONObject jsonObject = jsonParser.parseJSObject(jsonParser.createTokensFromLexems(lexems),"");
+        return jsonObject;
     }
 
     public void menuFileCloseOnAction(ActionEvent actionEvent) throws IOException, JSONErrorException {
@@ -121,5 +137,10 @@ public class MainWindowController {
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         File file = chooser.showSaveDialog(Main.stage);
         saveJSON(file);
+    }
+
+    public void btnRefreshTreeViewOnAction(ActionEvent actionEvent) throws IOException, JSONErrorException {
+        JSONobject = loadJSONFromTextArea();
+        loadJSONToTreeView();
     }
 }
