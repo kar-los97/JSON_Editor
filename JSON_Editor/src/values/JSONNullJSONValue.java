@@ -17,6 +17,6 @@ public class JSONNullJSONValue extends JSONValue {
 
     @Override
     public String toString() {
-        return "\""+this.getName()+"\""+" : "+ "null";
+        return "null";
     }
 }

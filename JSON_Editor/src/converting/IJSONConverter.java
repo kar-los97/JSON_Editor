@@ -5,5 +5,5 @@ import values.JSONObject;
 import java.io.IOException;
 
 public interface IJSONConverter {
-    String convertJSON(JSONObject object) throws IOException, JSONErrorException;
+    String convertJSON(JSONObject object) throws JSONErrorException;
 }

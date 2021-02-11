@@ -24,6 +24,6 @@ public class JSONBoolJSONValue extends JSONValue<Boolean> {
 
     @Override
     public String toString() {
-        return "\""+this.getName()+"\""+" : "+ value;
+        return ""+ value;
     }
 }

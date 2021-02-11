@@ -15,5 +15,9 @@
 		{
 			"value": 25.3
 		}
-	]
+	],
+	"objekt": {
+		"hodnota1": 22,
+		"hodno": "petr"
+	}
 }

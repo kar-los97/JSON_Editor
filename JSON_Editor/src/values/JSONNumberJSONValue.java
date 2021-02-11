@@ -23,6 +23,6 @@ public class JSONNumberJSONValue extends JSONValue<Double> {
 
     @Override
     public String toString() {
-        return "\""+this.getName()+"\""+" : "+ value;
+        return ""+ value;
     }
 }

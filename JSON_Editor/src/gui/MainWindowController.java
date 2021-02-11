@@ -53,36 +53,46 @@ public class MainWindowController {
         loadJSONToTreeView();
     }
 
-    private void loadJSONToTreeView() throws IOException, JSONErrorException {
+    private void loadJSONToTreeView() {
         treeJS.setRoot(new TreeItem<>());
         TreeItem<String> rootItem = new TreeItem<> ("{");
         rootItem.setExpanded(true);
         for (JSONValue v: JSONobject.getValue()) {
-            addTreeItem(rootItem,v);
-
+            addTreeItem(rootItem,v,true);
         }
+        rootItem.getChildren().add(new TreeItem<>("}"));
         treeJS.setRoot(rootItem);
         IJSONConverter JSONConverter = new JSONConverter();
-        textAreaJSON.setText(JSONConverter.convertJSON(JSONobject));
+        try {
+            textAreaJSON.setText(JSONConverter.convertJSON(JSONobject));
+        }catch (JSONErrorException ex){
+            showAlert("JSON converting error","JSON File is not valid",ex.getMessage(), Alert.AlertType.ERROR);
+        }
     }
 
-    private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd){
+    private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName){
+        TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": [");
+        trItem.setExpanded(true);
         if(valueToAdd instanceof JSONArray){
-            TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": [");
             for (JSONValue va:(List<JSONValue>)valueToAdd.getValue()) {
-                addTreeItem(trItem,va);
+                addTreeItem(trItem,va,false);
             }
             rootItem.getChildren().add(trItem);
             rootItem.getChildren().add(new TreeItem<>("]"));
         }else if (valueToAdd instanceof JSONObject){
-            TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": {");
             for(JSONValue va:(List<JSONValue>)valueToAdd.getValue()){
-                addTreeItem(trItem,va);
+                addTreeItem(trItem,va,true);
             }
             rootItem.getChildren().add(trItem);
             rootItem.getChildren().add(new TreeItem<>("}"));
         }else{
-            rootItem.getChildren().add(new TreeItem<>("\""+valueToAdd.getName()+"\""+": "+valueToAdd.getValue()));
+            if(printName){
+                trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": "+valueToAdd.toString());
+            }else{
+                trItem = new TreeItem<>(""+valueToAdd.toString());
+            }
+            trItem.setExpanded(true);
+            rootItem.getChildren().add(trItem);
         }
     }
 
@@ -96,11 +106,16 @@ public class MainWindowController {
         return jsonObject;
     }
 
-    private JSONObject loadJSONFromTextArea() throws JSONErrorException, IOException {
-        List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(textAreaJSON.getText());
-        IJSONParser jsonParser = new JSONParser();
-        JSONObject jsonObject = jsonParser.parseJSObject(jsonParser.createTokensFromLexems(lexems),"");
-        return jsonObject;
+    private JSONObject loadJSONFromTextArea(){
+        try {
+            List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(textAreaJSON.getText());
+            IJSONParser jsonParser = new JSONParser();
+            JSONObject jsonObject = jsonParser.parseJSObject(jsonParser.createTokensFromLexems(lexems), "");
+            return jsonObject;
+        }catch (JSONErrorException ex){
+            showAlert("JSON loading Error","JSON File is not valid",ex.getMessage(), Alert.AlertType.ERROR);
+            return JSONobject;
+        }
     }
 
     public void menuFileCloseOnAction(ActionEvent actionEvent) throws IOException, JSONErrorException {
@@ -146,7 +161,7 @@ public class MainWindowController {
         saveJSON(file);
     }
 
-    public void btnRefreshTreeViewOnAction(ActionEvent actionEvent) throws IOException, JSONErrorException {
+    public void btnRefreshTreeViewOnAction(ActionEvent actionEvent) throws IOException {
         JSONobject = loadJSONFromTextArea();
         loadJSONToTreeView();
     }

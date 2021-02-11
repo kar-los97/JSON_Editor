@@ -2,8 +2,6 @@ package converting;
 
 import exceptions.JSONErrorException;
 import values.*;
-
-import java.io.IOException;
 import java.util.List;
 
 public class JSONConverter implements IJSONConverter {
@@ -19,7 +17,7 @@ public class JSONConverter implements IJSONConverter {
         return list!=null&&!list.isEmpty();
     }
 
-    private void addTabs(StringBuilder JSONStringBuilder) throws IOException {
+    private void addTabs(StringBuilder JSONStringBuilder) {
         if(numberOfTabs>=0){
             for (int i = 0; i < numberOfTabs; i++) {
                 JSONStringBuilder.append("\t");
@@ -52,7 +50,7 @@ public class JSONConverter implements IJSONConverter {
     }
 
     @Override
-    public String convertJSON(JSONObject object) throws IOException, JSONErrorException {
+    public String convertJSON(JSONObject object) throws JSONErrorException {
         StringBuilder JSONStringBuilder = new StringBuilder();
         numberOfTabs = 0;
         JSONStringBuilder.append("{");
@@ -63,7 +61,7 @@ public class JSONConverter implements IJSONConverter {
         return JSONStringBuilder.toString();
     }
 
-    private void convertJSValue(JSONValue JSONValue, StringBuilder JSONStringBuilder) throws IOException, JSONErrorException {
+    private void convertJSValue(JSONValue JSONValue, StringBuilder JSONStringBuilder) throws JSONErrorException {
         JSONStringBuilder.append("\n");
         addTabs(JSONStringBuilder);
         writeStringValue(JSONValue.getName(),JSONStringBuilder);
@@ -71,7 +69,7 @@ public class JSONConverter implements IJSONConverter {
         writeValue(JSONValue,JSONStringBuilder);
     }
 
-    private void convertNestedJSObject(JSONObject value, StringBuilder JSONStringBuilder) throws IOException, JSONErrorException {
+    private void convertNestedJSObject(JSONObject value, StringBuilder JSONStringBuilder) throws JSONErrorException {
         JSONStringBuilder.append("{");
         numberOfTabs++;
         writeJSObjectValues(value, JSONStringBuilder);
@@ -81,7 +79,7 @@ public class JSONConverter implements IJSONConverter {
         JSONStringBuilder.append("}");
     }
 
-    private void writeJSObjectValues(JSONObject value, StringBuilder JSONStringBuilder) throws IOException, JSONErrorException {
+    private void writeJSObjectValues(JSONObject value, StringBuilder JSONStringBuilder) throws JSONErrorException {
         for (int i = 0; i < value.getValue().size() - 1; i++) {
             convertJSValue(value.getValue().get(i), JSONStringBuilder);
             JSONStringBuilder.append(",");
@@ -91,7 +89,7 @@ public class JSONConverter implements IJSONConverter {
         }
     }
 
-    private void writeJSArray(JSONArray array, StringBuilder JSONStringBuilder) throws IOException, JSONErrorException {
+    private void writeJSArray(JSONArray array, StringBuilder JSONStringBuilder) throws JSONErrorException {
         JSONStringBuilder.append("[\n");
         numberOfTabs++;
         for(int i = 0; i<array.getValue().size()-1;i++){
@@ -111,7 +109,7 @@ public class JSONConverter implements IJSONConverter {
 
     }
 
-    private void writeValue(JSONValue JSONValue, StringBuilder JSONStringBuilder) throws IOException, JSONErrorException {
+    private void writeValue(JSONValue JSONValue, StringBuilder JSONStringBuilder) throws JSONErrorException {
         if(isJSArray(JSONValue)){
             writeJSArray((JSONArray) JSONValue,JSONStringBuilder);
         }else if(isJSObject(JSONValue)){
@@ -130,19 +128,19 @@ public class JSONConverter implements IJSONConverter {
         }
     }
 
-    private void writeBoolValue(Boolean value, StringBuilder JSONStringBuilder) throws IOException {
+    private void writeBoolValue(Boolean value, StringBuilder JSONStringBuilder) {
         JSONStringBuilder.append(value.toString());
     }
 
-    private void writeStringValue(String stringValue, StringBuilder JSONStringBuilder) throws IOException {
+    private void writeStringValue(String stringValue, StringBuilder JSONStringBuilder) {
         JSONStringBuilder.append("\""+ stringValue + "\"");
     }
 
-    private void writeNumberValue(Double numberValue, StringBuilder JSONStringBuilder)throws  IOException{
+    private void writeNumberValue(Double numberValue, StringBuilder JSONStringBuilder){
         JSONStringBuilder.append(numberValue.toString());
     }
 
-    private void writeNullValue(StringBuilder JSONStringBuilder) throws IOException {
+    private void writeNullValue(StringBuilder JSONStringBuilder) {
         JSONStringBuilder.append("null");
     }
 }
