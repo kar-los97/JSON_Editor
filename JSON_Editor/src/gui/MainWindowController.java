@@ -58,25 +58,32 @@ public class MainWindowController {
         TreeItem<String> rootItem = new TreeItem<> ("{");
         rootItem.setExpanded(true);
         for (JSONValue v: JSONobject.getValue()) {
-            if(v instanceof JSONArray){
-                TreeItem<String> trItem = new TreeItem<>("\""+v.getName()+"\""+": [");
-                for (JSONValue va:(List<JSONValue>)v.getValue()) {
-                    trItem.getChildren().add(new TreeItem<>(""+va.getValue()));
-                }
-                rootItem.getChildren().add(trItem);
-            }else if (v instanceof JSONObject){
-                TreeItem<String> trItem = new TreeItem<>("\""+v.getName()+"\""+": {");
-                for(JSONValue va:(List<JSONValue>)v.getValue()){
-                    trItem.getChildren().add(new TreeItem<>("\""+va.getName()+"\""+": "+va.getValue()));
-                }
-                rootItem.getChildren().add(trItem);
-            }else{
-                rootItem.getChildren().add(new TreeItem<>("\""+v.getName()+"\""+": "+v.getValue()));
-            }
+            addTreeItem(rootItem,v);
+
         }
         treeJS.setRoot(rootItem);
         IJSONConverter JSONConverter = new JSONConverter();
         textAreaJSON.setText(JSONConverter.convertJSON(JSONobject));
+    }
+
+    private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd){
+        if(valueToAdd instanceof JSONArray){
+            TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": [");
+            for (JSONValue va:(List<JSONValue>)valueToAdd.getValue()) {
+                addTreeItem(trItem,va);
+            }
+            rootItem.getChildren().add(trItem);
+            rootItem.getChildren().add(new TreeItem<>("]"));
+        }else if (valueToAdd instanceof JSONObject){
+            TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": {");
+            for(JSONValue va:(List<JSONValue>)valueToAdd.getValue()){
+                addTreeItem(trItem,va);
+            }
+            rootItem.getChildren().add(trItem);
+            rootItem.getChildren().add(new TreeItem<>("}"));
+        }else{
+            rootItem.getChildren().add(new TreeItem<>("\""+valueToAdd.getName()+"\""+": "+valueToAdd.getValue()));
+        }
     }
 
     private JSONObject loadJSONFromFile(File openenedJSONFile) throws IOException, JSONErrorException {

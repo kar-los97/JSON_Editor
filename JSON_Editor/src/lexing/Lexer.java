@@ -50,7 +50,7 @@ public class Lexer {
         return ch=='"';
     }
 
-    public List<Lexem> createLexemsFromString(String jsonAsString) throws IOException {
+    public List<Lexem> createLexemsFromString(String jsonAsString) {
         List<Lexem> lexems = new ArrayList<>();
         String buffer = "";
         boolean isString = false;
@@ -58,6 +58,8 @@ public class Lexer {
             int column = 0;
             for(char ch : jsonAsString.toCharArray()){
                 if(isNotImportantChar(ch)){
+                    row++;
+                    column = 0;
                     continue;
                 }
                 if(isString && !isQuontatitonMarksChar(ch)){
@@ -88,9 +90,6 @@ public class Lexer {
                 column++;
             }
             addLexem(buffer,row,column,lexems);
-            buffer = "";
-            row++;
-
         return lexems;
     }
 
