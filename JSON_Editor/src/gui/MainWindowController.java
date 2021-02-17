@@ -1,21 +1,30 @@
 package gui;
 
 import exceptions.JSONErrorException;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.InputMethodEvent;
 import javafx.stage.FileChooser;
 import lexing.*;
 import parsing.*;
 import reading.*;
 import tokens.Token;
+import validating.TextChangeChecking;
 import values.*;
 import converting.*;
 import writing.*;
 import java.io.*;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class MainWindowController {
+    private LocalDateTime lastTimeChanged;
+    private Thread thredToCheckText;
+    private TextChangeChecking textChangeChecking;
     private JSONObject JSONobject;
     private File openedJSONFile;
     @FXML
@@ -25,6 +34,43 @@ public class MainWindowController {
 
     @FXML
     private void initialize() {
+        lastTimeChanged = LocalDateTime.now();
+        Thread taskThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (lastTimeChanged.plusSeconds(5).compareTo(LocalDateTime.now()) > 0) {
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                List<Lexem> listOfLexems = Lexer.getInstance().createLexemsFromString(textAreaJSON.getText());
+                IJSONParser parser = new JSONParser();
+                Queue<Token> listOfTokens = parser.createTokensFromLexems(listOfLexems);
+                try {
+                    parser.parseJSObject(listOfTokens, null);
+                } catch (JSONErrorException ex) {
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            //System.out.println(ex.getMessage());
+                            Alert alert = new Alert(Alert.AlertType.ERROR);
+                            alert.setContentText(ex.getMessage());
+                            alert.setTitle("JSON parsing error");
+                            alert.showAndWait();
+                        }
+                    });
+                }
+            }
+        });
+        textAreaJSON.textProperty().addListener((observable, oldValue, newValue) -> {
+            if(!taskThread.isAlive()){
+                taskThread.start();
+            }
+            lastTimeChanged = LocalDateTime.now();
+        });
+
         /*Main.stage.setOnCloseRequest(event -> {
                     try {
                         closeApp();
@@ -161,7 +207,7 @@ public class MainWindowController {
         saveJSON(file);
     }
 
-    public void btnRefreshTreeViewOnAction(ActionEvent actionEvent) throws IOException {
+    public void btnRefreshTreeViewOnAction(ActionEvent actionEvent) {
         JSONobject = loadJSONFromTextArea();
         loadJSONToTreeView();
     }
