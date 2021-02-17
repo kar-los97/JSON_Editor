@@ -22,8 +22,6 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class MainWindowController {
-    private LocalDateTime lastTimeChanged;
-    private Thread thredToCheckText;
     private TextChangeChecking textChangeChecking;
     private JSONObject JSONobject;
     private File openedJSONFile;
@@ -34,53 +32,16 @@ public class MainWindowController {
 
     @FXML
     private void initialize() {
-        lastTimeChanged = LocalDateTime.now();
-        Thread taskThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (lastTimeChanged.plusSeconds(5).compareTo(LocalDateTime.now()) > 0) {
-                    try {
-                        Thread.sleep(10);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                List<Lexem> listOfLexems = Lexer.getInstance().createLexemsFromString(textAreaJSON.getText());
-                IJSONParser parser = new JSONParser();
-                Queue<Token> listOfTokens = parser.createTokensFromLexems(listOfLexems);
-                try {
-                    parser.parseJSObject(listOfTokens, null);
-                } catch (JSONErrorException ex) {
-                    Platform.runLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            //System.out.println(ex.getMessage());
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setContentText(ex.getMessage());
-                            alert.setTitle("JSON parsing error");
-                            alert.showAndWait();
-                        }
-                    });
-                }
-            }
-        });
+        textChangeChecking = new TextChangeChecking(LocalDateTime.now(),textAreaJSON.getText());
+        textChangeChecking.start();
         textAreaJSON.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!taskThread.isAlive()){
-                taskThread.start();
+            if(!textChangeChecking.isAlive()){
+                textChangeChecking = new TextChangeChecking(LocalDateTime.now(),textAreaJSON.getText());
+                textChangeChecking.start();
             }
-            lastTimeChanged = LocalDateTime.now();
+            textChangeChecking.setLastTimeTextChanged(LocalDateTime.now());
+            textChangeChecking.setStringOfJSONFile(textAreaJSON.getText());
         });
-
-        /*Main.stage.setOnCloseRequest(event -> {
-                    try {
-                        closeApp();
-                    } catch (JSONErrorException e) {
-                       showAlert("JSON Error","JSON Error exception",e.getMessage(), Alert.AlertType.WARNING);
-                    } catch (IOException e) {
-                        showAlert("IOException","File error",e.getMessage(), Alert.AlertType.WARNING);
-                    }
-                }
-        );*/
     }
 
     private Optional<ButtonType> showAlert(String title, String headerText, String contentText, Alert.AlertType alertType){
