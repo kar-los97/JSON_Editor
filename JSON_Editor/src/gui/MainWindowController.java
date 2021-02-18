@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class MainWindowController {
+    private Thread threadToTextCheck;
     private TextChangeChecking textChangeChecking;
     private JSONObject JSONobject;
     private File openedJSONFile;
@@ -32,19 +33,21 @@ public class MainWindowController {
 
     @FXML
     private void initialize() {
-        textChangeChecking = new TextChangeChecking(LocalDateTime.now(),textAreaJSON.getText());
-        textChangeChecking.start();
+        textChangeChecking = new TextChangeChecking(LocalDateTime.now(),"");
+        threadToTextCheck = new Thread(textChangeChecking);
+        threadToTextCheck.start();
         textAreaJSON.textProperty().addListener((observable, oldValue, newValue) -> {
-            if(!textChangeChecking.isAlive()){
+            if(!threadToTextCheck.isAlive()){
                 textChangeChecking = new TextChangeChecking(LocalDateTime.now(),textAreaJSON.getText());
-                textChangeChecking.start();
+                threadToTextCheck = new Thread(textChangeChecking);
+                threadToTextCheck.start();
             }
             textChangeChecking.setLastTimeTextChanged(LocalDateTime.now());
             textChangeChecking.setStringOfJSONFile(textAreaJSON.getText());
         });
     }
 
-    private Optional<ButtonType> showAlert(String title, String headerText, String contentText, Alert.AlertType alertType){
+    private static Optional<ButtonType> showAlert(String title, String headerText, String contentText, Alert.AlertType alertType){
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
@@ -60,7 +63,7 @@ public class MainWindowController {
         loadJSONToTreeView();
     }
 
-    private void loadJSONToTreeView() {
+    public void loadJSONToTreeView() {
         treeJS.setRoot(new TreeItem<>());
         TreeItem<String> rootItem = new TreeItem<> ("{");
         rootItem.setExpanded(true);
@@ -77,7 +80,7 @@ public class MainWindowController {
         }
     }
 
-    private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName){
+    private static void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName){
         TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": [");
         trItem.setExpanded(true);
         if(valueToAdd instanceof JSONArray){

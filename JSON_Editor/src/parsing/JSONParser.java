@@ -17,7 +17,13 @@ public class JSONParser implements IJSONParser {
     }
 
     private boolean verifyTokensQueue(Queue<Token>tokens){
-        return !tokens.isEmpty()&&tokens!=null;
+        if(tokens.size()<=0){
+            return false;
+        }if(tokens==null){
+            return false;
+        }
+        return true;
+        //return !tokens.isEmpty()&&tokens!=null;
     }
 
     public Queue<Token> createTokensFromLexems(List<Lexem> lexems){
@@ -71,8 +77,11 @@ public class JSONParser implements IJSONParser {
     }
 
     public JSONObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException {
-        if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
-            throw new JSONErrorException("Curly bracket START expteat ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
+        if(tokens.isEmpty()){
+            return new JSONObject();
+        }
+        if(verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_START)){
+            throw new JSONErrorException("Curly bracket START expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
         }
         tokens.poll();
         JSONObject object;
@@ -101,13 +110,13 @@ public class JSONParser implements IJSONParser {
         }
         tokens.poll();
         object.addValue(parseValue(tokens,name));
-        //dokud neni ukoncovaci zavorka - cti hodnoty
+        //dokud je tam carka (oddelenni hodnot, tak cti dalsi hodnoty)
         while(verifyTokensQueue(tokens)&&tokens.peek().getTypeOfToken().equals(TokenType.COMMA)){
             tokens.poll();
             //nacteni nazvu
             name = parseStringValue(tokens);
             //ocekava se :
-            if(!verifyTokensQueue(tokens)&&!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
+            if(!verifyTokensQueue(tokens)||!tokens.peek().getTypeOfToken().equals(TokenType.COLON)){
                 throw new JSONErrorException("Colon expected at ("+tokens.peek().getRow()+", "+tokens.peek().getColumn()+")");
             }
             tokens.poll();
