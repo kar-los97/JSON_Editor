@@ -1,13 +1,9 @@
 package gui;
 
 import exceptions.JSONErrorException;
-import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
 import javafx.stage.FileChooser;
 import lexing.*;
 import parsing.*;
@@ -81,26 +77,32 @@ public class MainWindowController {
     }
 
     private static void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName){
-        TreeItem<String> trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": [");
-        trItem.setExpanded(true);
+        String firstRow = "";
+        if(printName){
+            firstRow+="\""+valueToAdd.getName()+"\""+": ";
+        }
+        TreeItem<String> trItem;
         if(valueToAdd instanceof JSONArray){
+            firstRow+="[";
+            trItem = new TreeItem<>(firstRow);
             for (JSONValue va:(List<JSONValue>)valueToAdd.getValue()) {
                 addTreeItem(trItem,va,false);
             }
+            trItem.setExpanded(true);
             rootItem.getChildren().add(trItem);
             rootItem.getChildren().add(new TreeItem<>("]"));
         }else if (valueToAdd instanceof JSONObject){
+            firstRow+="{";
+            trItem = new TreeItem<>(firstRow);
             for(JSONValue va:(List<JSONValue>)valueToAdd.getValue()){
                 addTreeItem(trItem,va,true);
             }
+            trItem.setExpanded(true);
             rootItem.getChildren().add(trItem);
             rootItem.getChildren().add(new TreeItem<>("}"));
         }else{
-            if(printName){
-                trItem = new TreeItem<>("\""+valueToAdd.getName()+"\""+": "+valueToAdd.toString());
-            }else{
-                trItem = new TreeItem<>(""+valueToAdd.toString());
-            }
+            firstRow+=valueToAdd.getValue();
+            trItem = new TreeItem<>(firstRow);
             trItem.setExpanded(true);
             rootItem.getChildren().add(trItem);
         }
