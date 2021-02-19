@@ -19,31 +19,25 @@ public class Lexer {
         return instance;
     }
 
-    private boolean isNotImportantChar(char ch){
-        for(int i = 0; i<notImportantChars.length;i++){
-            if(notImportantChars[i]==ch){
+    private boolean foundCharacter(char[]characters, char character){
+        for(int i = 0; i<characters.length;i++){
+            if(characters[i]==character){
                 return true;
             }
         }
         return false;
+    }
+
+    private boolean isNotImportantChar(char ch){
+        return foundCharacter(notImportantChars,ch);
     }
 
     private boolean isWhiteSpaceChar(char ch){
-        for(int i = 0; i<whiteSpaceChars.length;i++){
-            if(whiteSpaceChars[i]==ch){
-                return true;
-            }
-        }
-        return false;
+        return foundCharacter(whiteSpaceChars,ch);
     }
 
     private boolean isSeparatingChar(char ch){
-        for(int i = 0; i<separetingChars.length;i++){
-            if(separetingChars[i]==ch){
-                return true;
-            }
-        }
-        return false;
+        return foundCharacter(separetingChars,ch);
     }
 
     private boolean isQuontatitonMarksChar(char ch){

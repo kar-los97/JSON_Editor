@@ -59,13 +59,13 @@ public class MainWindowController {
         loadJSONToTreeView();
     }
 
-    public void loadJSONToTreeView() {
+    private void loadJSONToTreeView() {
         treeJS.setRoot(new TreeItem<>());
         TreeItem<String> rootItem = new TreeItem<> ("{");
         rootItem.setExpanded(true);
-        for (JSONValue v: JSONobject.getValue()) {
-            addTreeItem(rootItem,v,true);
-        }
+
+        addTreeItems(JSONobject, rootItem, true);
+
         rootItem.getChildren().add(new TreeItem<>("}"));
         treeJS.setRoot(rootItem);
         IJSONConverter JSONConverter = new JSONConverter();
@@ -76,36 +76,60 @@ public class MainWindowController {
         }
     }
 
-    private static void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName){
-        String firstRow = "";
-        if(printName){
-            firstRow+="\""+valueToAdd.getName()+"\""+": ";
+    private void addTreeItems(JSONValue valueToAdd, TreeItem<String> treeItem, boolean printName) {
+        for (JSONValue value : (List<JSONValue>) valueToAdd.getValue()) {
+            addTreeItem(treeItem, value, printName);
         }
+    }
+
+    private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName) {
         TreeItem<String> trItem;
-        if(valueToAdd instanceof JSONArray){
-            firstRow+="[";
-            trItem = new TreeItem<>(firstRow);
-            for (JSONValue va:(List<JSONValue>)valueToAdd.getValue()) {
-                addTreeItem(trItem,va,false);
-            }
+
+        if (valueToAdd instanceof JSONArray) {
+            addJsonArray(rootItem, valueToAdd,printName);
+        } else if (valueToAdd instanceof JSONObject) {
+            addJsonObject(rootItem, valueToAdd,printName);
+        } else if (printName) {
+            trItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": " + valueToAdd.toString());
             trItem.setExpanded(true);
             rootItem.getChildren().add(trItem);
-            rootItem.getChildren().add(new TreeItem<>("]"));
-        }else if (valueToAdd instanceof JSONObject){
-            firstRow+="{";
-            trItem = new TreeItem<>(firstRow);
-            for(JSONValue va:(List<JSONValue>)valueToAdd.getValue()){
-                addTreeItem(trItem,va,true);
-            }
-            trItem.setExpanded(true);
-            rootItem.getChildren().add(trItem);
-            rootItem.getChildren().add(new TreeItem<>("}"));
-        }else{
-            firstRow+=valueToAdd.getValue();
-            trItem = new TreeItem<>(firstRow);
+        } else {
+            trItem = new TreeItem<>("" + valueToAdd.toString());
             trItem.setExpanded(true);
             rootItem.getChildren().add(trItem);
         }
+    }
+
+    private void addJsonArray(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
+        TreeItem<String> treeItem;
+        if(printName){
+            treeItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": [");
+        }else{
+            treeItem = new TreeItem<>("[");
+        }
+        treeItem.setExpanded(true);
+
+        addTreeItems(valueToAdd, treeItem, false);
+
+        rootItem.getChildren().add(treeItem);
+        rootItem.getChildren().add(new TreeItem<>("]"));
+
+    }
+
+
+    private void addJsonObject(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
+        TreeItem<String> treeItem;
+        if(printName){
+            treeItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": {");
+        }else{
+            treeItem = new TreeItem<>("{");
+        }
+        treeItem.setExpanded(true);
+
+        addTreeItems(valueToAdd, treeItem, true);
+
+        rootItem.getChildren().add(treeItem);
+        rootItem.getChildren().add(new TreeItem<>("}"));
     }
 
     private JSONObject loadJSONFromFile(File openenedJSONFile) throws IOException, JSONErrorException {
@@ -143,18 +167,17 @@ public class MainWindowController {
         }
     }
 
-    private void saveJSON(File fileToSave) throws IOException, JSONErrorException {
+    private void saveJSON(File fileToSave){
         IJSONParser jsonParser = new JSONParser();
         Queue<Token> tokens = jsonParser.createTokensFromLexems(Lexer.getInstance().createLexemsFromString(textAreaJSON.getText()));
         try {
             JSONobject = jsonParser.parseJSObject(tokens, null);
+            IJSONWriter JSONwriter = new JSONWriter();
+            JSONwriter.writeJSONToFile(JSONobject,fileToSave);
         }catch (JSONErrorException ex){
             showAlert("JSON saving Error","JSON File is not valid",ex.getMessage(), Alert.AlertType.ERROR);
-            JSONobject = null;
-        }
-        if(JSONobject!=null){
-            IJSONWriter JSONWriter = new JSONWriter();
-            JSONWriter.writeJSONToFile(JSONobject,fileToSave);
+        }catch (IOException ex){
+            showAlert("JSON saving Error","File doesn't open.","Please choose correct file.", Alert.AlertType.ERROR);
         }
     }
 
