@@ -92,7 +92,7 @@ public class Files {
             parser.parseJSObject(queueOfTokens, "");
             return true;
         } catch(JSONErrorException ex){
-            Alerts.showAlert("JSON validity ERROR","JSON file is not valid",ex.getMessage(), Alert.AlertType.ERROR);
+            Alerts.getInstance().showAlert("JSON validity ERROR","JSON file is not valid",ex.getMessage(), Alert.AlertType.ERROR);
             return false;
         }
     }

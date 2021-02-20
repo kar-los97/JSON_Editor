@@ -56,7 +56,7 @@ public class MainWindowController {
     }
 
     private void closeApp() {
-        Optional<ButtonType> optionalBtn = Alerts.showAlert("Closing","Are you sure that you want close the file?","Do you want save the file before close it?", Alert.AlertType.CONFIRMATION);
+        Optional<ButtonType> optionalBtn = Alerts.getInstance().showAlert("Closing","Are you sure that you want close the file?","Do you want save the file before close it?", Alert.AlertType.CONFIRMATION);
         if(optionalBtn.get().equals(ButtonType.OK)){
             Files.getInstance().saveJSONAs(textAreaJSON.getText());
         }else{

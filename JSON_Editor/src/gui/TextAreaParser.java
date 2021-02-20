@@ -40,7 +40,7 @@ public class TextAreaParser {
         try {
             jsonInString = converter.convertJSON(JSONobject);
         }catch (JSONErrorException ex){
-            Alerts.showAlert("JSON Converting ERROR","Error in converting json to string",ex.getMessage(), Alert.AlertType.ERROR);
+            Alerts.getInstance().showAlert("JSON Converting ERROR","Error in converting json to string",ex.getMessage(), Alert.AlertType.ERROR);
         }
         return jsonInString;
     }
