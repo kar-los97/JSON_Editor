@@ -22,7 +22,7 @@ public class TreeViewParser {
         return instance;
     }
 
-    public static TreeView<String> loadJSONToTreeView(TreeView<String> treeJS, JSONObject jsonObject) {
+    public TreeView<String> loadJSONToTreeView(TreeView<String> treeJS, JSONObject jsonObject) {
         treeJS.setRoot(new TreeItem<>());
         TreeItem<String> rootItem = new TreeItem<> ("{");
         rootItem.setExpanded(true);
@@ -40,13 +40,13 @@ public class TreeViewParser {
         return treeJS;
     }
 
-    private static void addTreeItems(JSONValue valueToAdd, TreeItem<String> treeItem, boolean printName) {
+    private void addTreeItems(JSONValue valueToAdd, TreeItem<String> treeItem, boolean printName) {
         for (JSONValue value : (List<JSONValue>) valueToAdd.getValue()) {
             addTreeItem(treeItem, value, printName);
         }
     }
 
-    private static void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName) {
+    private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName) {
         TreeItem<String> trItem;
         if (valueToAdd instanceof JSONArray) {
             addJsonArray(rootItem, valueToAdd,printName);
@@ -63,7 +63,7 @@ public class TreeViewParser {
         }
     }
 
-    private static void addJsonArray(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
+    private void addJsonArray(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
         TreeItem<String> treeItem;
         if(printName){
             treeItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": [");
@@ -79,7 +79,7 @@ public class TreeViewParser {
 
     }
 
-    private static void addJsonObject(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
+    private void addJsonObject(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
         TreeItem<String> treeItem;
         if(printName){
             treeItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": {");

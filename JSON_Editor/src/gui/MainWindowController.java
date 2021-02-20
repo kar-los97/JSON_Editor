@@ -65,7 +65,7 @@ public class MainWindowController {
     }
 
     public void btnRefreshTreeViewOnAction(ActionEvent actionEvent) {
-        JSONobject = TextAreaParser.loadJSONFromTextArea(textAreaJSON.getText(),JSONobject);
+        JSONobject = TextAreaParser.getInstance().loadJSONFromTextArea(textAreaJSON.getText(),JSONobject);
         treeJS = TreeViewParser.getInstance().loadJSONToTreeView(treeJS,JSONobject);
         textAreaJSON.setText(TextAreaParser.getInstance().getTextToTextArea(JSONobject));
     }

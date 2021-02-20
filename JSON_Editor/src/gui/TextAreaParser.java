@@ -22,7 +22,7 @@ public class TextAreaParser {
         return instance;
     }
 
-    public static JSONObject loadJSONFromTextArea(String jsonInString, JSONObject openedObject){
+    public JSONObject loadJSONFromTextArea(String jsonInString, JSONObject openedObject){
         try {
             List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(jsonInString);
             IJSONParser jsonParser = new JSONParser();
@@ -34,7 +34,7 @@ public class TextAreaParser {
         }
     }
 
-    public static String getTextToTextArea(JSONObject JSONobject){
+    public String getTextToTextArea(JSONObject JSONobject){
         IJSONConverter converter = new JSONConverter();
         String jsonInString = "";
         try {

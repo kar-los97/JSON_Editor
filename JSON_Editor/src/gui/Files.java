@@ -28,14 +28,14 @@ public class Files {
         return instance;
     }
 
-    public static void saveJSONAs(String jsonInString){
+    public void saveJSONAs(String jsonInString){
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         File file = chooser.showSaveDialog(Main.stage);
         saveJSON(file,jsonInString);
     }
 
-    public static void saveJSON(File fileToSave, String jsonInString){
+    public void saveJSON(File fileToSave, String jsonInString){
         if (!isJSONValid(jsonInString)) {
             return;
         }
@@ -52,12 +52,12 @@ public class Files {
         }
     }
 
-    public static File openJSON(){
+    public File openJSON(){
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON","*.json"));
         return chooser.showOpenDialog(Main.stage);
     }
-    public static JSONObject openJSONFromFile(File openedJSONFile){
+    public JSONObject openJSONFromFile(File openedJSONFile){
         JSONObject jsonObject = null;
         try {
             jsonObject = loadJSONFromFile(openedJSONFile);
@@ -69,7 +69,7 @@ public class Files {
         return jsonObject;
     }
 
-    private static JSONObject loadJSONFromFile(File openedJSONFile) throws IOException, JSONErrorException {
+    private JSONObject loadJSONFromFile(File openedJSONFile) throws IOException, JSONErrorException {
         IJSONReader jsReader = new JSONReader();
         JSONObject jsonObject = null;
         try{
@@ -84,7 +84,7 @@ public class Files {
         return jsonObject;
     }
 
-    public static boolean isJSONValid(String jsonInString){
+    public boolean isJSONValid(String jsonInString){
         List<Lexem> listOfLexems = Lexer.getInstance().createLexemsFromString(jsonInString);
         IJSONParser parser = new JSONParser();
         Queue<Token> queueOfTokens = parser.createTokensFromLexems(listOfLexems);

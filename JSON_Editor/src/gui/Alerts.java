@@ -16,7 +16,7 @@ public class Alerts {
         return instance;
     }
 
-    public static Optional<ButtonType> showAlert(String title, String headerText, String contentText, Alert.AlertType alertType){
+    public Optional<ButtonType> showAlert(String title, String headerText, String contentText, Alert.AlertType alertType){
         Alert alert = new Alert(alertType);
         alert.setTitle(title);
         alert.setHeaderText(headerText);
