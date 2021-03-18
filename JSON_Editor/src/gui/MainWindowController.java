@@ -22,10 +22,10 @@ public class MainWindowController {
 
     @FXML
     private void initialize() {
-        textChangeChecking = new TextChangeChecking(LocalDateTime.now(),"");
-        threadToTextCheck = new Thread(textChangeChecking);
-        threadToTextCheck.start();
-        textAreaJSON.textProperty().addListener((observable, oldValue, newValue) -> {
+        //textChangeChecking = new TextChangeChecking(LocalDateTime.now(),"");
+        //threadToTextCheck = new Thread(textChangeChecking);
+        //threadToTextCheck.start();
+        /*textAreaJSON.textProperty().addListener((observable, oldValue, newValue) -> {
             if(!threadToTextCheck.isAlive()){
                 textChangeChecking = new TextChangeChecking(LocalDateTime.now(),textAreaJSON.getText());
                 threadToTextCheck = new Thread(textChangeChecking);
@@ -33,7 +33,7 @@ public class MainWindowController {
             }
             textChangeChecking.setLastTimeTextChanged(LocalDateTime.now());
             textChangeChecking.setStringOfJSONFile(textAreaJSON.getText());
-        });
+        });*/
     }
 
     public void menuFileOpenOnAction(ActionEvent actionEvent){

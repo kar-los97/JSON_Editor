@@ -16,6 +16,8 @@ public class Main extends Application {
         primaryStage.setTitle("JSON editor");
         primaryStage.setScene(new Scene(root));
         primaryStage.setMaximized(true);
+        primaryStage.setMinHeight(600);
+        primaryStage.setMinWidth(610);
         stage = primaryStage;
         primaryStage.show();
     }
