@@ -9,9 +9,6 @@ public class JSONBoolJSONValue extends JSONValue<Boolean> {
         this.value = value;
     }
 
-    public JSONBoolJSONValue() {
-    }
-
     @Override
     public Boolean getValue() {
         return value;
@@ -24,6 +21,6 @@ public class JSONBoolJSONValue extends JSONValue<Boolean> {
 
     @Override
     public String toString() {
-        return ""+ value;
+        return "" + value;
     }
 }

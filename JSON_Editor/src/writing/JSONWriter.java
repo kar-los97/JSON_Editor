@@ -10,7 +10,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-public class JSONWriter implements IJSONWriter{
+public class JSONWriter implements IJSONWriter {
 
     @Override
     public void writeJSONToFile(JSONObject JSONObject, File fileToWrite) throws IOException, JSONErrorException {

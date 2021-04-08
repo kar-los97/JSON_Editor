@@ -1,11 +1,11 @@
 {
-	"numberValue" : 100.0,
-	"stringValue" : "string",
-	"nullValue" : null,
-	"boolValue" : true,
-	"pole": [
-		1.0,
-		2.0,
-		3.0
-	]
+  "numberValue": 100.0,
+  "stringValue": "string",
+  "nullValue": null,
+  "boolValue": true,
+  "pole": [
+    1.0,
+    2.0,
+    3.0
+  ]
 }

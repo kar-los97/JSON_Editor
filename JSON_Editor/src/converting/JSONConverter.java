@@ -2,50 +2,56 @@ package converting;
 
 import exceptions.JSONErrorException;
 import values.*;
+
 import java.util.List;
+import java.util.Map;
 
 public class JSONConverter implements IJSONConverter {
     private int numberOfTabs;
     private String buffer;
 
-    public JSONConverter(){
+    public JSONConverter() {
         numberOfTabs = 0;
         buffer = "";
     }
 
-    private boolean isValueListValid(List<JSONValue> list){
-        return list!=null&&!list.isEmpty();
+    private boolean isValueListValid(Map<String, JSONValue> values) {
+        return values != null && !values.isEmpty();
+    }
+
+    private boolean isValueListValid(List<JSONValue> values) {
+        return values != null && !values.isEmpty();
     }
 
     private void addTabs(StringBuilder JSONStringBuilder) {
-        if(numberOfTabs>=0){
+        if (numberOfTabs >= 0) {
             for (int i = 0; i < numberOfTabs; i++) {
                 JSONStringBuilder.append("\t");
             }
         }
     }
 
-    private boolean isStringValue(JSONValue JSONValue){
+    private boolean isStringValue(JSONValue JSONValue) {
         return JSONValue instanceof JSONStringJSONValue;
     }
 
-    private  boolean isNumberValue(JSONValue JSONValue){
+    private boolean isNumberValue(JSONValue JSONValue) {
         return JSONValue instanceof JSONNumberJSONValue;
     }
 
-    private boolean isNullValue(JSONValue JSONValue){
+    private boolean isNullValue(JSONValue JSONValue) {
         return JSONValue instanceof JSONNullJSONValue;
     }
 
-    private boolean isJSArray(JSONValue JSONValue){
+    private boolean isJSArray(JSONValue JSONValue) {
         return JSONValue instanceof JSONArray;
     }
 
-    private boolean isJSObject(JSONValue JSONValue){
+    private boolean isJSObject(JSONValue JSONValue) {
         return JSONValue instanceof JSONObject;
     }
 
-    private boolean isBoolValue(JSONValue JSONValue){
+    private boolean isBoolValue(JSONValue JSONValue) {
         return JSONValue instanceof JSONBoolJSONValue;
     }
 
@@ -64,9 +70,9 @@ public class JSONConverter implements IJSONConverter {
     private void convertJSValue(JSONValue JSONValue, StringBuilder JSONStringBuilder) throws JSONErrorException {
         JSONStringBuilder.append("\n");
         addTabs(JSONStringBuilder);
-        writeStringValue(JSONValue.getName(),JSONStringBuilder);
+        writeStringValue(JSONValue.getName(), JSONStringBuilder);
         JSONStringBuilder.append(": ");
-        writeValue(JSONValue,JSONStringBuilder);
+        writeValue(JSONValue, JSONStringBuilder);
     }
 
     private void convertNestedJSObject(JSONObject value, StringBuilder JSONStringBuilder) throws JSONErrorException {
@@ -80,28 +86,26 @@ public class JSONConverter implements IJSONConverter {
     }
 
     private void writeJSObjectValues(JSONObject value, StringBuilder JSONStringBuilder) throws JSONErrorException {
-        for (int i = 0; i < value.getValue().size() - 1; i++) {
-            convertJSValue(value.getValue().get(i), JSONStringBuilder);
+        for (JSONValue val : value.getValue()) {
+            convertJSValue(val, JSONStringBuilder);
             JSONStringBuilder.append(",");
         }
-        if(isValueListValid(value.getValue())) {
-            convertJSValue(value.getValue().get(value.getValue().size() - 1), JSONStringBuilder);
+        if (!value.getValue().isEmpty()) {
+            JSONStringBuilder.deleteCharAt(JSONStringBuilder.lastIndexOf(","));
         }
     }
 
     private void writeJSArray(JSONArray array, StringBuilder JSONStringBuilder) throws JSONErrorException {
         JSONStringBuilder.append("[\n");
         numberOfTabs++;
-        for(int i = 0; i<array.getValue().size()-1;i++){
+        for (JSONValue val : array.getValue()) {
             addTabs(JSONStringBuilder);
-            writeValue(array.getValue().get(i),JSONStringBuilder);
+            writeValue(val, JSONStringBuilder);
             JSONStringBuilder.append(",");
             JSONStringBuilder.append("\n");
         }
-        addTabs(JSONStringBuilder);
-        if(isValueListValid(array.getValue())) {
-            writeValue(array.getValue().get(array.getValue().size()-1), JSONStringBuilder);
-            JSONStringBuilder.append("\n");
+        if (!array.getValue().isEmpty()) {
+            JSONStringBuilder.deleteCharAt(JSONStringBuilder.lastIndexOf(",\n"));
         }
         numberOfTabs--;
         addTabs(JSONStringBuilder);
@@ -110,20 +114,19 @@ public class JSONConverter implements IJSONConverter {
     }
 
     private void writeValue(JSONValue JSONValue, StringBuilder JSONStringBuilder) throws JSONErrorException {
-        if(isJSArray(JSONValue)){
-            writeJSArray((JSONArray) JSONValue,JSONStringBuilder);
-        }else if(isJSObject(JSONValue)){
+        if (isJSArray(JSONValue)) {
+            writeJSArray((JSONArray) JSONValue, JSONStringBuilder);
+        } else if (isJSObject(JSONValue)) {
             convertNestedJSObject((JSONObject) JSONValue, JSONStringBuilder);
-        }else if(isNumberValue(JSONValue)){
-            writeNumberValue(((JSONNumberJSONValue) JSONValue).getValue(),JSONStringBuilder);
-        }else if(isStringValue(JSONValue)){
-            writeStringValue(((JSONStringJSONValue) JSONValue).getValue(),JSONStringBuilder);
-        }else if(isNullValue(JSONValue)){
+        } else if (isNumberValue(JSONValue)) {
+            writeNumberValue(((JSONNumberJSONValue) JSONValue).getValue(), JSONStringBuilder);
+        } else if (isStringValue(JSONValue)) {
+            writeStringValue(((JSONStringJSONValue) JSONValue).getValue(), JSONStringBuilder);
+        } else if (isNullValue(JSONValue)) {
             writeNullValue(JSONStringBuilder);
-        }else if(isBoolValue(JSONValue)){
-            writeBoolValue(((JSONBoolJSONValue) JSONValue).getValue(),JSONStringBuilder);
-        }
-        else{
+        } else if (isBoolValue(JSONValue)) {
+            writeBoolValue(((JSONBoolJSONValue) JSONValue).getValue(), JSONStringBuilder);
+        } else {
             throw new JSONErrorException("Writing error, Unexpected type of value in JSON file.");
         }
     }
@@ -133,10 +136,10 @@ public class JSONConverter implements IJSONConverter {
     }
 
     private void writeStringValue(String stringValue, StringBuilder JSONStringBuilder) {
-        JSONStringBuilder.append("\""+ stringValue + "\"");
+        JSONStringBuilder.append("\"" + stringValue + "\"");
     }
 
-    private void writeNumberValue(Double numberValue, StringBuilder JSONStringBuilder){
+    private void writeNumberValue(Double numberValue, StringBuilder JSONStringBuilder) {
         JSONStringBuilder.append(numberValue.toString());
     }
 

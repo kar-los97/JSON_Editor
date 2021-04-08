@@ -9,6 +9,7 @@ import lexing.Lexer;
 import parsing.IJSONParser;
 import parsing.JSONParser;
 import tokens.Token;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Queue;
@@ -31,8 +32,8 @@ public class TextChangeChecking implements Runnable {
     }
 
     @Override
-    public void run(){
-        while(lastTimeTextChanged.plusSeconds(5).compareTo(LocalDateTime.now())>0){
+    public void run() {
+        while (lastTimeTextChanged.plusSeconds(5).compareTo(LocalDateTime.now()) > 0) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -44,9 +45,9 @@ public class TextChangeChecking implements Runnable {
         Queue<Token> listOfTokens = parser.createTokensFromLexems(listOfLexems);
         try {
             parser.parseJSObject(listOfTokens, "");
-        }catch (JSONErrorException ex){
+        } catch (JSONErrorException ex) {
             Platform.runLater(() -> {
-                Alerts.getInstance().showAlert("JSON parsing error","JSON File is not valid",ex.getMessage(), Alert.AlertType.ERROR);
+                Alerts.getInstance().showAlert("JSON parsing error", "JSON File is not valid", ex.getMessage(), Alert.AlertType.ERROR);
             });
         }
 

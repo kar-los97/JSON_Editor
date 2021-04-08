@@ -10,6 +10,8 @@ import java.util.Queue;
 
 public interface IJSONParser {
     Queue<Token> createTokensFromLexems(List<Lexem> lexems);
+
     Token createToken(Lexem l);
+
     JSONObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException;
 }

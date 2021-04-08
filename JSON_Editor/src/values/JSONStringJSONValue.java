@@ -23,6 +23,6 @@ public class JSONStringJSONValue extends JSONValue<String> {
 
     @Override
     public String toString() {
-        return "\""+value+"\"";
+        return "\"" + value + "\"";
     }
 }

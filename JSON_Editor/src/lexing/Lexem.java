@@ -14,10 +14,10 @@ public class Lexem {
 
     private String value;
 
-    public Lexem(){
+    public Lexem() {
     }
 
-    public Lexem(String value){
+    public Lexem(String value) {
         this.value = value;
     }
 
@@ -37,6 +37,6 @@ public class Lexem {
 
     @Override
     public String toString() {
-        return this.value + "("+row+", "+column+")";
+        return this.value + "(" + row + ", " + column + ")";
     }
 }

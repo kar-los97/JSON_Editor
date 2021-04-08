@@ -1,12 +1,36 @@
 {
-	"numberValue" : 100.0,
-	"stringValue" : "string",
-	"nullValue" : null,
-	"boolValue" : true,
-	"pole": [
-		1.0,
-		2.0,
-		3.0,
-		["pole" : 2.0, "pole" : "ahoj", "pole" : null]
-	]
+  "jmeno": "Petr",
+  "prijmeni": "Novák",
+  "bydliste": {
+    "ulice": "Karlova",
+    "cp": 22,
+    "psc": "55111",
+    "mesto": "Petrov"
+  },
+  "deti": [
+    {
+      "jmeno": "Lenka",
+      "prijmeni": "Nováková",
+      "bydliste": {
+        "ulice": "Karlova",
+        "cp": 22,
+        "psc": "55111",
+        "mesto": "Petrov"
+      }
+    },
+    {
+      "jmeno": "Lukáš",
+      "prijmeni": "Novák",
+      "bydliste": {
+        "ulice": "Karlova",
+        "cp": 22,
+        "psc": "55111",
+        "mesto": "Petrov"
+      }
+    }
+  ],
+  "prezdivky": [
+    "Novas",
+    "Pěťas"
+  ]
 }

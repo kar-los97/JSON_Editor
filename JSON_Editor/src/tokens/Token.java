@@ -6,23 +6,25 @@ public class Token {
     private int row;
     private int column;
     private TokenType typeOfToken;
-    public TokenType getTypeOfToken(){
-        return  typeOfToken;
+
+    public TokenType getTypeOfToken() {
+        return typeOfToken;
     }
+
     private String value;
 
-    public Token(String value,int row, int column) {
+    public Token(String value, int row, int column) {
         this.row = row;
         this.column = column;
         this.value = value;
         typeOfToken = TokenType.STRING;
-        try{
+        try {
             Double.parseDouble(value);
             typeOfToken = TokenType.NUMBER;
-        }catch (NumberFormatException ex){
-            if(value.equals("true")||value.equals("false")){
+        } catch (NumberFormatException ex) {
+            if (value.equals("true") || value.equals("false")) {
                 typeOfToken = TokenType.BOOLEAN;
-            }else {
+            } else {
                 for (TokenType t : TokenType.values()) {
                     if (value.equals(t.getValue())) {
                         typeOfToken = t;
@@ -56,6 +58,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return typeOfToken + "("+value+")"+" Position: ("+row+", "+column+")";
+        return typeOfToken + "(" + value + ")" + " Position: (" + row + ", " + column + ")";
     }
 }

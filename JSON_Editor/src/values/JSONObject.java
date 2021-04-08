@@ -1,7 +1,6 @@
 package values;
 
 
-
 import exceptions.JSONErrorException;
 
 import java.util.ArrayList;
@@ -18,14 +17,14 @@ public class JSONObject extends JSONValue<List<JSONValue>> {
         JSONValues = new ArrayList<>();
     }
 
-    public JSONObject(String name){
+    public JSONObject(String name) {
         super(name);
         JSONValues = new ArrayList<>();
     }
 
     public void addValue(JSONValue val) throws JSONErrorException {
-        if(checkName(val)){
-            throw new JSONErrorException("The name \""+val.getName()+"\" exist in this object.");
+        if (checkName(val)) {
+            throw new JSONErrorException("The name \"" + val.getName() + "\" exist in this object.");
         }
         JSONValues.add(val);
     }
@@ -40,12 +39,12 @@ public class JSONObject extends JSONValue<List<JSONValue>> {
 
     }
 
-    private boolean checkName(JSONValue newJSONValue){
-        if(newJSONValue instanceof JSONObject){
+    private boolean checkName(JSONValue newJSONValue) {
+        if (newJSONValue instanceof JSONObject) {
             return false;
         }
-        for (JSONValue v: JSONValues) {
-            if(v.getName().equals(newJSONValue.getName())){
+        for (JSONValue v : JSONValues) {
+            if (v.getName().equals(newJSONValue.getName())) {
                 return true;
             }
         }

@@ -16,7 +16,7 @@ public class TreeViewParser {
     private static TreeViewParser instance = null;
 
     public static TreeViewParser getInstance() {
-        if(instance==null){
+        if (instance == null) {
             instance = new TreeViewParser();
         }
         return instance;
@@ -24,9 +24,10 @@ public class TreeViewParser {
 
     public TreeView<String> loadJSONToTreeView(TreeView<String> treeJS, JSONObject jsonObject) {
         treeJS.setRoot(new TreeItem<>());
-        TreeItem<String> rootItem = new TreeItem<> ("{");
+        TreeItem<String> rootItem = new TreeItem<>("{");
         rootItem.setExpanded(true);
 
+        //addJsonObject(rootItem,jsonObject,false);
         addTreeItems(jsonObject, rootItem, true);
 
         rootItem.getChildren().add(new TreeItem<>("}"));
@@ -34,8 +35,8 @@ public class TreeViewParser {
         IJSONConverter JSONConverter = new JSONConverter();
         try {
             JSONConverter.convertJSON(jsonObject);
-        }catch (JSONErrorException ex){
-            Alerts.getInstance().showAlert("JSON converting error","JSON File is not valid",ex.getMessage(), Alert.AlertType.ERROR);
+        } catch (JSONErrorException ex) {
+            Alerts.getInstance().showAlert("JSON converting error", "JSON File is not valid", ex.getMessage(), Alert.AlertType.ERROR);
         }
         return treeJS;
     }
@@ -46,12 +47,18 @@ public class TreeViewParser {
         }
     }
 
+    private void addTreeItemsFromObject(JSONObject valueToAdd, TreeItem<String> treeItem, boolean printName) {
+        for (JSONValue val : valueToAdd.getValue()) {
+            addTreeItem(treeItem, val, printName);
+        }
+    }
+
     private void addTreeItem(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName) {
         TreeItem<String> trItem;
         if (valueToAdd instanceof JSONArray) {
-            addJsonArray(rootItem, valueToAdd,printName);
+            addJsonArray(rootItem, valueToAdd, printName);
         } else if (valueToAdd instanceof JSONObject) {
-            addJsonObject(rootItem, valueToAdd,printName);
+            addJsonObject(rootItem, valueToAdd, printName);
         } else if (printName) {
             trItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": " + valueToAdd.toString());
             trItem.setExpanded(true);
@@ -63,11 +70,11 @@ public class TreeViewParser {
         }
     }
 
-    private void addJsonArray(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
+    private void addJsonArray(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName) {
         TreeItem<String> treeItem;
-        if(printName){
+        if (printName) {
             treeItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": [");
-        }else{
+        } else {
             treeItem = new TreeItem<>("[");
         }
         treeItem.setExpanded(true);
@@ -79,16 +86,16 @@ public class TreeViewParser {
 
     }
 
-    private void addJsonObject(TreeItem<String> rootItem, JSONValue valueToAdd,boolean printName) {
+    private void addJsonObject(TreeItem<String> rootItem, JSONValue valueToAdd, boolean printName) {
         TreeItem<String> treeItem;
-        if(printName){
+        if (printName) {
             treeItem = new TreeItem<>("\"" + valueToAdd.getName() + "\"" + ": {");
-        }else{
+        } else {
             treeItem = new TreeItem<>("{");
         }
         treeItem.setExpanded(true);
 
-        addTreeItems(valueToAdd, treeItem, true);
+        addTreeItemsFromObject((JSONObject) valueToAdd, treeItem, true);
 
         rootItem.getChildren().add(treeItem);
         rootItem.getChildren().add(new TreeItem<>("}"));

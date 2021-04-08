@@ -10,8 +10,9 @@ import java.io.IOException;
 
 public class Main extends Application {
     public static Stage stage;
+
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("main_window.fxml"));
         primaryStage.setTitle("JSON editor");
         primaryStage.setScene(new Scene(root));

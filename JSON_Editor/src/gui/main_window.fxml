@@ -1,69 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="410.0" minWidth="610.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainWindowController">
-   <children>
-      <BorderPane minHeight="400.0" minWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
-         <top>
-            <MenuBar BorderPane.alignment="CENTER">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" onAction="#menuFileOpenOnAction" text="Open" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuFileSaveOnAction" text="Save" />
-                     <MenuItem mnemonicParsing="false" onAction="#menuFileSaveAsOnAction" text="Save as" />
-                        <MenuItem mnemonicParsing="false" onAction="#menuFileCloseOnAction" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </top>
-         <bottom>
-            <AnchorPane prefHeight="39.0" prefWidth="590.0" BorderPane.alignment="CENTER">
-               <children>
-                  <HBox layoutY="23.0" prefHeight="26.0" prefWidth="590.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Button fx:id="btRefreshTreeView" mnemonicParsing="false" onAction="#btnRefreshTreeViewOnAction" text="Refresh treeView" />
-                     </children></HBox>
-               </children>
-            </AnchorPane>
-         </bottom>
-         <center>
-            <AnchorPane BorderPane.alignment="CENTER">
-               <children>
-                  <BorderPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                     <center>
-                        <HBox BorderPane.alignment="CENTER">
-                           <children>
-                              <TreeView fx:id="treeJS" prefHeight="312.0" prefWidth="525.0" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TreeView>
-                              <TextArea fx:id="textAreaJSON" HBox.hgrow="ALWAYS">
-                                 <HBox.margin>
-                                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                                 </HBox.margin>
-                              </TextArea>
-                           </children>
+<?import org.fxmisc.richtext.CodeArea?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="410.0" minWidth="610.0" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.MainWindowController">
+    <children>
+        <BorderPane minHeight="400.0" minWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
+                    AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+            <top>
+                <MenuBar BorderPane.alignment="CENTER">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#menuFileOpenOnAction" text="Open"/>
+                                <MenuItem mnemonicParsing="false" onAction="#menuFileSaveOnAction" text="Save"/>
+                                <MenuItem mnemonicParsing="false" onAction="#menuFileSaveAsOnAction" text="Save as"/>
+                                <MenuItem mnemonicParsing="false" onAction="#menuFileCloseOnAction" text="Close"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#menuItemEditFind" text="Find"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About"/>
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </top>
+            <bottom>
+                <AnchorPane prefHeight="39.0" prefWidth="590.0" BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox layoutY="23.0" prefHeight="26.0" prefWidth="590.0" AnchorPane.bottomAnchor="0.0"
+                              AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <Button fx:id="btRefreshTreeView" mnemonicParsing="false"
+                                        onAction="#btnRefreshTreeViewOnAction" text="Refresh treeView"/>
+                            </children>
                         </HBox>
-                     </center>
-                  </BorderPane>
-               </children>
-            </AnchorPane>
-         </center></BorderPane>
-   </children>
+                    </children>
+                </AnchorPane>
+            </bottom>
+            <center>
+                <AnchorPane BorderPane.alignment="CENTER">
+                    <children>
+                        <HBox fx:id="hboxTreeText" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <children>
+                                <TreeView fx:id="treeJS" HBox.hgrow="ALWAYS">
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </TreeView>
+                                <AnchorPane fx:id="paneCodeArea" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <CodeArea fx:id="textAreaJSON" accessibleRole="TEXT_AREA" cache="true"
+                                                  cacheHint="SPEED" lineHighlighterOn="true"
+                                                  AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                            <cursor>
+                                                <Cursor fx:constant="TEXT"/>
+                                            </cursor>
+                                        </CodeArea>
+                                    </children>
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </AnchorPane>
+                            </children>
+                        </HBox>
+                    </children>
+                </AnchorPane>
+            </center>
+        </BorderPane>
+    </children>
 </AnchorPane>

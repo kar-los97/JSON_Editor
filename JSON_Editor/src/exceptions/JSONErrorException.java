@@ -1,6 +1,6 @@
 package exceptions;
 
-public class JSONErrorException extends Exception{
+public class JSONErrorException extends Exception {
     public JSONErrorException() {
     }
 
