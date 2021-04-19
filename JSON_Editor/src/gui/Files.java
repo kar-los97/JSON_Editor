@@ -56,7 +56,11 @@ public class Files {
     public File openJSON() {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
-        return chooser.showOpenDialog(Main.stage);
+        try {
+            return chooser.showOpenDialog(Main.stage);
+        }catch(NullPointerException ex){
+            return null;
+        }
     }
 
     public JSONObject openJSONFromFile(File openedJSONFile) {

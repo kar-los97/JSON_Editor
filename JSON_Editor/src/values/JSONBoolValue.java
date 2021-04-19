@@ -1,10 +1,10 @@
 package values;
 
-public class JSONBoolJSONValue extends JSONValue<Boolean> {
+public class JSONBoolValue extends JSONValue<Boolean> {
 
     private boolean value;
 
-    public JSONBoolJSONValue(String name, boolean value) {
+    public JSONBoolValue(String name, boolean value) {
         super(name);
         this.value = value;
     }

@@ -14,10 +14,12 @@ public class JSONWriter implements IJSONWriter {
 
     @Override
     public void writeJSONToFile(JSONObject JSONObject, File fileToWrite) throws IOException, JSONErrorException {
-        IJSONConverter JSONConverter = new JSONConverter();
-        String JSONinString = JSONConverter.convertJSON(JSONObject);
-        BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite));
-        writer.write(JSONinString);
-        writer.close();
+        if(fileToWrite!=null) {
+            IJSONConverter JSONConverter = new JSONConverter();
+            String JSONinString = JSONConverter.convertJSON(JSONObject);
+            BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite));
+            writer.write(JSONinString);
+            writer.close();
+        }
     }
 }

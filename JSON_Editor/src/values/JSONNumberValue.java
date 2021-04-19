@@ -1,14 +1,14 @@
 package values;
 
-public class JSONNumberJSONValue extends JSONValue<Double> {
+public class JSONNumberValue extends JSONValue<Double> {
     private double value;
 
-    public JSONNumberJSONValue(String name, double value) {
+    public JSONNumberValue(String name, double value) {
         super(name);
         this.value = value;
     }
 
-    public JSONNumberJSONValue() {
+    public JSONNumberValue() {
     }
 
     @Override

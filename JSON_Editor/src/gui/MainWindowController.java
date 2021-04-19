@@ -2,26 +2,38 @@ package gui;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TextInputDialog;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
 import validating.TextChangeChecking;
 import values.JSONObject;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MainWindowController {
     public HBox hboxTreeText;
     public AnchorPane paneCodeArea;
+    public ScrollPane scrollPane;
+    public MenuItem menuFileSave;
+    public MenuItem menuFileOpen;
+    public MenuItem menuFileSaveAs;
+    public MenuItem menuEditFind;
     private Thread threadToTextCheck;
     private TextChangeChecking textChangeChecking;
     private JSONObject JSONobject;
@@ -33,9 +45,15 @@ public class MainWindowController {
 
     @FXML
     private void initialize() {
-        paneCodeArea.getChildren().add(new VirtualizedScrollPane<>(textAreaJSON));
-        textAreaJSON.prefHeightProperty().bind(paneCodeArea.heightProperty());
-        textAreaJSON.prefWidthProperty().bind(paneCodeArea.widthProperty());
+        menuFileSave.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCodeCombination.CONTROL_DOWN));
+        menuFileOpen.setAccelerator(new KeyCodeCombination(KeyCode.O, KeyCodeCombination.CONTROL_DOWN));
+        menuFileSaveAs.setAccelerator(new KeyCodeCombination(KeyCode.S, KeyCodeCombination.SHIFT_DOWN, KeyCodeCombination.CONTROL_DOWN));
+        menuEditFind.setAccelerator(new KeyCodeCombination(KeyCode.F, KeyCodeCombination.CONTROL_DOWN));
+        scrollPane.setFitToHeight(true);
+        scrollPane.setFitToWidth(true);
+        /*paneCodeArea.getChildren().add(virtualizedScrollPane);
+        textAreaJSON.prefHeightProperty().bind(virtualizedScrollPane.heightProperty());
+        textAreaJSON.prefWidthProperty().bind(virtualizedScrollPane.widthProperty());*/
         textAreaJSON.setParagraphGraphicFactory(LineNumberFactory.get(textAreaJSON));
         textChangeChecking = new TextChangeChecking(LocalDateTime.now(), "");
         threadToTextCheck = new Thread(textChangeChecking);
@@ -93,10 +111,15 @@ public class MainWindowController {
         textInputDialog.setTitle("Find");
         textInputDialog.setHeaderText("Find in JSON");
         textInputDialog.setContentText("What are you finding?");
-        String findingItem = textInputDialog.showAndWait().get();
-        if (findingItem != null) {
-            int index = textAreaJSON.getText().indexOf(findingItem);
-            textAreaJSON.selectRange(index, index + findingItem.length());
+        String findingItem = "";
+        try{
+            findingItem = textInputDialog.showAndWait().get();
+            if (!findingItem.isEmpty()) {
+                int index = textAreaJSON.getText().indexOf(findingItem);
+                textAreaJSON.selectRange(index, index + findingItem.length());
+            }
+        }catch (NoSuchElementException ex){
+
         }
     }
 }

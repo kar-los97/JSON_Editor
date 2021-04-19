@@ -73,11 +73,13 @@ public class JSONParser implements IJSONParser {
         return getTypicalTypeOfToken(lexem);
     }
 
+    //Metoda pro vytovření tokenu z lexému
     public Token createToken(Lexem lexem) {
         TokenType typeOfNewToken = getTokenTypeFromLexem(lexem);
         return new Token(typeOfNewToken, lexem.getValue(), lexem.getRow(), lexem.getColumn());
     }
 
+    //Metoda pro vytvoření JSON objektu z tokenů
     public JSONObject parseJSObject(Queue<Token> tokens, String objectName) throws JSONErrorException {
         if (tokens.isEmpty()) {
             return new JSONObject();
@@ -129,9 +131,6 @@ public class JSONParser implements IJSONParser {
             }
             object.addValue(parseValue(tokens, name));
         }
-        if (!verifyTokensQueue(tokens) || !tokens.peek().getTypeOfToken().equals(TokenType.CURLY_BRACKET_END)) {
-            throw new JSONErrorException("Curly bracket END expected at (" + tokens.peek().getRow() + ", " + tokens.peek().getColumn() + ")");
-        }
     }
 
     private String parseStringValue(Queue<Token> tokens) throws JSONErrorException {
@@ -164,10 +163,10 @@ public class JSONParser implements IJSONParser {
         throw new JSONErrorException("Number value expected at (" + tokens.peek().getRow() + ", " + tokens.peek().getColumn() + ")");
     }
 
-    private JSONNullJSONValue parseNullValue(Queue<Token> tokens, String name) throws JSONErrorException {
+    private JSONNullValue parseNullValue(Queue<Token> tokens, String name) throws JSONErrorException {
         if (verifyTokensQueue(tokens) && tokens.peek().getTypeOfToken().equals(TokenType.NULL)) {
             tokens.poll();
-            return new JSONNullJSONValue(name);
+            return new JSONNullValue(name);
         }
         throw new JSONErrorException("Null expected at (" + tokens.peek().getRow() + ", " + tokens.peek().getColumn() + ")");
     }
@@ -181,11 +180,11 @@ public class JSONParser implements IJSONParser {
             case NULL:
                 return parseNullValue(tokens, name);
             case QUONTATION_MARKS:
-                return new JSONStringJSONValue(name, parseStringValue(tokens));
+                return new JSONStringValue(name, parseStringValue(tokens));
             case BOOLEAN:
-                return new JSONBoolJSONValue(name, parseBoolValue(tokens));
+                return new JSONBoolValue(name, parseBoolValue(tokens));
             case NUMBER:
-                return new JSONNumberJSONValue(name, parseNumberValue(tokens));
+                return new JSONNumberValue(name, parseNumberValue(tokens));
             default:
                 throw new JSONErrorException("Unexpected token at (" + tokens.peek().getRow() + ", " + tokens.peek().getColumn() + ")");
         }
