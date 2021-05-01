@@ -7,5 +7,5 @@ import java.io.File;
 import java.io.IOException;
 
 public interface IJSONWriter {
-    void writeJSONToFile(JSONObject JSONObject, File fileToWrite) throws IOException, JSONErrorException;
+    File writeJSONToFile(JSONObject JSONObject, File fileToWrite) throws IOException, JSONErrorException;
 }

@@ -14,7 +14,6 @@ public abstract class JSONValue<T> {
     }
 
     public JSONValue() {
-
     }
 
     public abstract T getValue();

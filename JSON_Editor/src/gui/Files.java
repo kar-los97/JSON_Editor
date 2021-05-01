@@ -29,28 +29,30 @@ public class Files {
         return instance;
     }
 
-    public void saveJSONAs(String jsonInString) {
+    public File saveJSONAs(String jsonInString) {
         FileChooser chooser = new FileChooser();
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
         File file = chooser.showSaveDialog(Main.stage);
         saveJSON(file, jsonInString);
+        return file;
     }
 
-    public void saveJSON(File fileToSave, String jsonInString) {
+    public File saveJSON(File fileToSave, String jsonInString) {
         if (!isJSONValid(jsonInString)) {
-            return;
+            return fileToSave;
         }
         IJSONParser jsonParser = new JSONParser();
         Queue<Token> tokens = jsonParser.createTokensFromLexems(Lexer.getInstance().createLexemsFromString(jsonInString));
         try {
             JSONObject JSONobject = jsonParser.parseJSObject(tokens, null);
             IJSONWriter JSONwriter = new JSONWriter();
-            JSONwriter.writeJSONToFile(JSONobject, fileToSave);
+            fileToSave = JSONwriter.writeJSONToFile(JSONobject, fileToSave);
         } catch (JSONErrorException ex) {
             Alerts.getInstance().showAlert("JSON saving Error", "JSON File is not valid", ex.getMessage(), Alert.AlertType.ERROR);
         } catch (IOException ex) {
             Alerts.getInstance().showAlert("JSON saving Error", "File doesn't open.", "Please choose correct file.", Alert.AlertType.ERROR);
         }
+        return fileToSave;
     }
 
     public File openJSON() {
@@ -58,20 +60,14 @@ public class Files {
         chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("JSON", "*.json"));
         try {
             return chooser.showOpenDialog(Main.stage);
-        }catch(NullPointerException ex){
+        } catch (NullPointerException ex) {
             return null;
         }
     }
 
-    public JSONObject openJSONFromFile(File openedJSONFile) {
+    public JSONObject openJSONFromFile(File openedJSONFile) throws IOException, JSONErrorException {
         JSONObject jsonObject = null;
-        try {
-            jsonObject = loadJSONFromFile(openedJSONFile);
-        } catch (IOException ex) {
-            Alerts.getInstance().showAlert("Loading file ERROR", "File doesn't open.", "Please choose correct file.", Alert.AlertType.ERROR);
-        } catch (JSONErrorException ex) {
-            Alerts.getInstance().showAlert("JSOUN Loading ERROR", "File doesn't load.", "Please choose correct file.", Alert.AlertType.ERROR);
-        }
+        jsonObject = loadJSONFromFile(openedJSONFile);
         return jsonObject;
     }
 
@@ -84,8 +80,8 @@ public class Files {
             IJSONParser jsParser = new JSONParser();
             Queue<Token> tokens = jsParser.createTokensFromLexems(lexems);
             jsonObject = jsParser.parseJSObject(tokens, null);
-        } catch (NullPointerException ex) {
-            Alerts.getInstance().showAlert("Opening file ERROR", "JSON File is not open", "Please open JSON file.", Alert.AlertType.ERROR);
+        } catch (NullPointerException | JSONErrorException ex) {
+            throw new JSONErrorException("JSON file is not valid!");
         }
         return jsonObject;
     }

@@ -50,4 +50,29 @@ public class JSONObject extends JSONValue<List<JSONValue>> {
         }
         return false;
     }
+
+/*    public JSONObject filterName(String filteredName) throws JSONErrorException {
+        JSONObject newObject = new JSONObject(this.getName());
+        for(JSONValue val:JSONValues){
+            if(val instanceof JSONObject){
+                JSONObject filteredObject =((JSONObject) val).filterName(filteredName);
+                if(filteredObject!=null) newObject.addValue(filteredObject);
+            }else if(val instanceof JSONArray){
+                if(val.getName().contains(filteredName)){
+                    newObject.addValue(val);
+                }else{
+                    JSONArray newArray = ((JSONArray) val).filterName(filteredName);
+                    if(newArray!=null) newObject.addValue(newArray);
+                }
+            }else if(val.getName().contains(filteredName)){
+                newObject.addValue(val);
+            }
+        }
+        if(newObject.getValue().size()==0){
+            return null;
+        }else{
+            return newObject;
+        }
+
+    }*/
 }

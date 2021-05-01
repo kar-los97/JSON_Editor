@@ -13,13 +13,14 @@ import java.io.IOException;
 public class JSONWriter implements IJSONWriter {
 
     @Override
-    public void writeJSONToFile(JSONObject JSONObject, File fileToWrite) throws IOException, JSONErrorException {
-        if(fileToWrite!=null) {
+    public File writeJSONToFile(JSONObject JSONObject, File fileToWrite) throws IOException, JSONErrorException {
+        if (fileToWrite != null) {
             IJSONConverter JSONConverter = new JSONConverter();
             String JSONinString = JSONConverter.convertJSON(JSONObject);
             BufferedWriter writer = new BufferedWriter(new FileWriter(fileToWrite));
             writer.write(JSONinString);
             writer.close();
         }
+        return fileToWrite;
     }
 }

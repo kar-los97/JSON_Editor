@@ -2,6 +2,8 @@ package validating;
 
 import exceptions.JSONErrorException;
 import gui.Alerts;
+import gui.Main;
+import gui.MainWindowController;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import lexing.Lexem;
@@ -45,6 +47,10 @@ public class TextChangeChecking implements Runnable {
         Queue<Token> listOfTokens = parser.createTokensFromLexems(listOfLexems);
         try {
             parser.parseJSObject(listOfTokens, "");
+            Platform.runLater(() -> {
+                MainWindowController controller = Main.getLoader().getController();
+                controller.loadJsonToTree();
+            });
         } catch (JSONErrorException ex) {
             Platform.runLater(() -> {
                 Alerts.getInstance().showAlert("JSON parsing error", "JSON File is not valid", ex.getMessage(), Alert.AlertType.ERROR);

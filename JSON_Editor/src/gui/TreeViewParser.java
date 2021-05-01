@@ -1,16 +1,13 @@
 package gui;
 
-import converting.IJSONConverter;
-import converting.JSONConverter;
+import converting.*;
 import exceptions.JSONErrorException;
-import javafx.scene.control.Alert;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import values.JSONArray;
 import values.JSONObject;
 import values.JSONValue;
 
-import java.util.HashSet;
 import java.util.List;
 
 public class TreeViewParser {
@@ -23,22 +20,22 @@ public class TreeViewParser {
         return instance;
     }
 
-    public TreeView<String> loadJSONToTreeView(TreeView<String> treeJS, JSONObject jsonObject) {
+    public TreeView<String> loadJSONToTreeView(TreeView<String> treeJS, JSONObject jsonObject) throws JSONErrorException {
+        if (jsonObject == null) {
+            throw new JSONErrorException("JSON object is empty!");
+        }
         treeJS.setRoot(new TreeItem<>());
         TreeItem<String> rootItem = new TreeItem<>("{");
         rootItem.setExpanded(true);
 
-        //addJsonObject(rootItem,jsonObject,false);
         addTreeItems(jsonObject, rootItem, true);
 
         rootItem.getChildren().add(new TreeItem<>("}"));
         treeJS.setRoot(rootItem);
         IJSONConverter JSONConverter = new JSONConverter();
-        try {
-            JSONConverter.convertJSON(jsonObject);
-        } catch (JSONErrorException ex) {
-            Alerts.getInstance().showAlert("JSON converting error", "JSON File is not valid", ex.getMessage(), Alert.AlertType.ERROR);
-        }
+
+        JSONConverter.convertJSON(jsonObject);
+
         return treeJS;
     }
 

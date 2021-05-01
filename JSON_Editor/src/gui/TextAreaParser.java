@@ -1,10 +1,7 @@
 package gui;
 
-import converting.IJSONConverter;
-import converting.JSONConverter;
+import converting.*;
 import exceptions.JSONErrorException;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TextArea;
 import lexing.Lexem;
 import lexing.Lexer;
 import parsing.IJSONParser;
@@ -23,32 +20,22 @@ public class TextAreaParser {
         return instance;
     }
 
-    public JSONObject loadJSONFromTextArea(String jsonInString, JSONObject openedObject) {
+    public JSONObject loadJSONFromTextArea(String jsonInString, JSONObject openedObject) throws JSONErrorException {
         try {
             List<Lexem> lexems = Lexer.getInstance().createLexemsFromString(jsonInString);
             IJSONParser jsonParser = new JSONParser();
             JSONObject jsonObject = jsonParser.parseJSObject(jsonParser.createTokensFromLexems(lexems), "");
             return jsonObject;
         } catch (JSONErrorException ex) {
-            Alerts.getInstance().showAlert("JSON loading Error", "JSON File is not valid", ex.getMessage(), Alert.AlertType.ERROR);
-            return openedObject;
+            throw new JSONErrorException("Error at loading json from text area.");
         }
     }
 
-    public String getTextToTextArea(JSONObject JSONobject) {
+    public String getTextToTextArea(JSONObject JSONobject) throws JSONErrorException {
         IJSONConverter converter = new JSONConverter();
         String jsonInString = "";
 
-        try {
-            jsonInString = converter.convertJSON(JSONobject);
-        } catch (JSONErrorException ex) {
-            Alerts.getInstance().showAlert("JSON Converting ERROR", "Error in converting json to string", ex.getMessage(), Alert.AlertType.ERROR);
-        }
+        jsonInString = converter.convertJSON(JSONobject);
         return jsonInString;
-    }
-
-    public TextArea createTextAreaFromJsonObject(TextArea textArea, JSONObject JSONobject) {
-        textArea.setText(getTextToTextArea(JSONobject));
-        return new TextArea(getTextToTextArea(JSONobject));
     }
 }

@@ -4,7 +4,6 @@ import exceptions.JSONErrorException;
 import values.*;
 
 import java.util.List;
-import java.util.Map;
 
 public class JSONConverter implements IJSONConverter {
     private int numberOfTabs;
@@ -13,10 +12,6 @@ public class JSONConverter implements IJSONConverter {
     public JSONConverter() {
         numberOfTabs = 0;
         buffer = "";
-    }
-
-    private boolean isValueListValid(Map<String, JSONValue> values) {
-        return values != null && !values.isEmpty();
     }
 
     private boolean isValueListValid(List<JSONValue> values) {
@@ -86,6 +81,9 @@ public class JSONConverter implements IJSONConverter {
     }
 
     private void convertJSONObjectValues(JSONObject value, StringBuilder JSONStringBuilder) throws JSONErrorException {
+        if (value == null) {
+            throw new JSONErrorException("JSON file is not correct!!");
+        }
         for (JSONValue val : value.getValue()) {
             convertJSONValueWithName(val, JSONStringBuilder);
             JSONStringBuilder.append(",");
@@ -146,4 +144,5 @@ public class JSONConverter implements IJSONConverter {
     private void convertJSONNullValue(StringBuilder JSONStringBuilder) {
         JSONStringBuilder.append("null");
     }
+
 }

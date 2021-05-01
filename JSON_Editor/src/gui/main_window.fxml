@@ -1,33 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.layout.*?>
-<?import org.fxmisc.richtext.*?>
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="410.0" minWidth="610.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/10.0.2-internal" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.MainWindowController">
+<?import org.fxmisc.flowless.VirtualizedScrollPane?>
+<?import org.fxmisc.richtext.CodeArea?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="410.0" minWidth="610.0" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="gui.MainWindowController">
     <children>
-        <BorderPane minHeight="400.0" minWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+        <BorderPane minHeight="400.0" minWidth="600.0" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0"
+                    AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
             <top>
                 <MenuBar BorderPane.alignment="CENTER">
                     <menus>
                         <Menu mnemonicParsing="false" text="File">
                             <items>
-                                <MenuItem fx:id="menuFileOpen" mnemonicParsing="false" onAction="#menuFileOpenOnAction" text="Open" />
-                                <MenuItem fx:id="menuFileSave" mnemonicParsing="false" onAction="#menuFileSaveOnAction" text="Save" />
-                                <MenuItem fx:id="menuFileSaveAs" mnemonicParsing="false" onAction="#menuFileSaveAsOnAction" text="Save as" />
-                                <MenuItem mnemonicParsing="false" onAction="#menuFileCloseOnAction" text="Close" />
+                                <MenuItem fx:id="menuFileOpen" mnemonicParsing="false" onAction="#menuFileOpenOnAction"
+                                          text="Open"/>
+                                <MenuItem fx:id="menuFileSave" mnemonicParsing="false" onAction="#menuFileSaveOnAction"
+                                          text="Save"/>
+                                <MenuItem fx:id="menuFileSaveAs" mnemonicParsing="false"
+                                          onAction="#menuFileSaveAsOnAction" text="Save as"/>
+                                <MenuItem mnemonicParsing="false" onAction="#menuFileCloseOnAction" text="Close"/>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
+                        <Menu mnemonicParsing="false" text="Tools">
                             <items>
-                                <MenuItem fx:id="menuEditFind" mnemonicParsing="false" onAction="#menuItemEditFind" text="Find" />
+                                <MenuItem fx:id="menuEditFind" mnemonicParsing="false"
+                                          onAction="#menuItemEditFindOnAction" text="Find"/>
+                                <MenuItem fx:id="menuEditFindNext" mnemonicParsing="false"
+                                          onAction="#menuItemEditFindNext" text="Find next"/>
+                                <MenuItem mnemonicParsing="false" onAction="#btnLoadJsonToTreeOnAction"
+                                          text="Load JSON to TREE">
+                                    <accelerator>
+                                        <KeyCodeCombination alt="UP" code="T" control="DOWN" meta="UP" shift="UP"
+                                                            shortcut="UP"/>
+                                    </accelerator>
+                                </MenuItem>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Help">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About" />
+                                <MenuItem fx:id="menuHelpAbout" mnemonicParsing="false"
+                                          onAction="#menuHelpAboutOnAction" text="About"/>
                             </items>
                         </Menu>
                     </menus>
@@ -36,35 +54,64 @@
             <bottom>
                 <AnchorPane prefHeight="39.0" prefWidth="590.0" BorderPane.alignment="CENTER">
                     <children>
-                        <HBox layoutY="23.0" prefHeight="26.0" prefWidth="590.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER" layoutY="23.0" prefHeight="26.0" prefWidth="590.0"
+                              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                              AnchorPane.topAnchor="0.0">
                             <children>
-                                <Button fx:id="btRefreshTreeView" mnemonicParsing="false" onAction="#btnRefreshTreeViewOnAction" text="Refresh treeView" />
+                                <Button fx:id="btRefreshTreeView" mnemonicParsing="false"
+                                        onAction="#btnLoadJsonToTreeOnAction" prefHeight="30.0" prefWidth="118.0"
+                                        text="Load JSON to TREE">
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </Button>
+                                <TextField fx:id="tfFinding" prefHeight="30.0" prefWidth="118.0"
+                                           promptText="finding word in json">
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </TextField>
+                                <Button mnemonicParsing="false" onAction="#btnFindOnAction" prefHeight="30.0"
+                                        prefWidth="118.0" text="Find">
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </Button>
+                                <Button mnemonicParsing="false" onAction="#btnFindNextOnAction" prefHeight="30.0"
+                                        prefWidth="118.0" text="Find next">
+                                    <HBox.margin>
+                                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                                    </HBox.margin>
+                                </Button>
                             </children>
                         </HBox>
                     </children>
-               <BorderPane.margin>
-                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-               </BorderPane.margin>
+                    <BorderPane.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </BorderPane.margin>
                 </AnchorPane>
             </bottom>
-         <left>
-                    <TreeView fx:id="treeJS" prefWidth="300.0" BorderPane.alignment="CENTER" />
-         </left>
-         <center>
-            <ScrollPane fx:id="scrollPane" fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-              <content>
-                <AnchorPane fx:id="paneCodeArea">
-                     <children>
-                                  <CodeArea id="code-area" fx:id="textAreaJSON" accessibleRole="TEXT_AREA" cache="true" cacheHint="SPEED" lineHighlighterOn="true" stylesheets="@../../../../../Desktop/style.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                      <cursor>
-                                          <Cursor fx:constant="TEXT" />
-                                      </cursor>
-                                  </CodeArea>
-                     </children>
-                  </AnchorPane>
-              </content>
-            </ScrollPane>
-         </center>
+            <left>
+                <TreeView fx:id="treeJS" prefWidth="300.0" BorderPane.alignment="CENTER"/>
+            </left>
+            <center>
+                <AnchorPane fx:id="paneCodeArea" BorderPane.alignment="CENTER">
+                    <children>
+                        <VirtualizedScrollPane fx:id="virtualizedScrollPane" AnchorPane.bottomAnchor="0.0"
+                                               AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                                               AnchorPane.topAnchor="0.0">
+                            <content>
+                                <CodeArea id="code-area" fx:id="textAreaJSON" accessibleRole="TEXT_AREA" cache="true"
+                                          cacheHint="SPEED" lineHighlighterOn="true">
+                                    <cursor>
+                                        <Cursor fx:constant="TEXT"/>
+                                    </cursor>
+                                </CodeArea>
+                            </content>
+                        </VirtualizedScrollPane>
+                    </children>
+                </AnchorPane>
+            </center>
         </BorderPane>
     </children>
 </AnchorPane>
